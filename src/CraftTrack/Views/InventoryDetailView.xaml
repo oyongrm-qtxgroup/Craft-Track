@@ -1,0 +1,162 @@
+<UserControl x:Class="CraftTrack.Views.InventoryDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:enums="clr-namespace:CraftTrack.Models.Enums">
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard Storyboard="{StaticResource FadeSlideIn}" />
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0">
+        <StackPanel MaxWidth="860" Margin="0,0,0,32">
+            <!-- Error Message -->
+            <Border Background="{DynamicResource DangerBgBrush}" CornerRadius="8" Padding="14,10" Margin="0,0,0,16"
+                    Visibility="{Binding ErrorMessage, Converter={StaticResource BoolToVisibility}}">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="AlertCircleOutline" Foreground="{DynamicResource DangerTextBrush}" Width="18" Height="18"
+                                             VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DangerTextBrush}" FontSize="13" VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
+
+            <!-- ══════ Item Details ══════ -->
+            <TextBlock Text="Item Information" Style="{StaticResource SectionTitle}" />
+            <Border Style="{StaticResource ModernCard}" Padding="24" Margin="0,0,0,20">
+                <StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Item Name *"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 Margin="0,0,8,12" />
+
+                        <ComboBox Grid.Column="1"
+                                  materialDesign:HintAssist.Hint="Category *"
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  SelectedValue="{Binding Category}"
+                                  SelectedValuePath="Tag"
+                                  Margin="8,0,0,12">
+                            <ComboBoxItem Content="Raw Material" Tag="{x:Static enums:InventoryCategory.RawMaterial}" />
+                            <ComboBoxItem Content="Tool &amp; Equipment" Tag="{x:Static enums:InventoryCategory.ToolAndEquipment}" />
+                        </ComboBox>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Text="{Binding UnitOfMeasure, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Unit of Measure"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 Margin="0,0,8,12" />
+
+                        <TextBox Grid.Column="1" Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Current Stock"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 IsReadOnly="{Binding IsNewItem, Converter={StaticResource InverseBoolConverter}}"
+                                 Margin="8,0,8,12" />
+
+                        <TextBox Grid.Column="2" Text="{Binding LowStockThreshold, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Low Stock Threshold"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 Margin="8,0,8,12" />
+
+                        <TextBox Grid.Column="3" Text="{Binding UnitCost, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                 materialDesign:HintAssist.Hint="Unit Cost (₱)"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 Margin="8,0,0,12" />
+                    </Grid>
+
+                    <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Notes (supplier, storage, etc.)"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60" />
+                </StackPanel>
+            </Border>
+
+            <!-- ══════ Stock Adjustment (only for existing items) ══════ -->
+            <StackPanel Visibility="{Binding IsNewItem, Converter={StaticResource InverseBoolToVisibility}}">
+                <TextBlock Text="Stock Adjustment" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource ModernCard}" Padding="24" Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="120" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox Grid.Column="0"
+                                  materialDesign:HintAssist.Hint="Type"
+                                  SelectedValue="{Binding AdjustmentType}"
+                                  SelectedValuePath="Tag"
+                                  Margin="0,0,8,0">
+                            <ComboBoxItem Content="Add" Tag="{x:Static enums:AdjustmentType.Add}" />
+                            <ComboBoxItem Content="Deduct" Tag="{x:Static enums:AdjustmentType.Deduct}" />
+                        </ComboBox>
+
+                        <TextBox Grid.Column="1" Text="{Binding AdjustmentQuantity, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Quantity"
+                                 Margin="8,0,8,0" />
+
+                        <TextBox Grid.Column="2" Text="{Binding AdjustmentNote, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Reason (optional)"
+                                 Margin="8,0,8,0" />
+
+                        <Button Grid.Column="3" Style="{StaticResource ModernPrimaryButton}"
+                                Command="{Binding AdjustStockCommand}" Padding="16,8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="SwapVertical" Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                <TextBlock Text="Adjust" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Adjustment History -->
+                <TextBlock Text="Adjustment History" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource ModernCard}" Padding="0" Margin="0,0,0,20">
+                    <DataGrid ItemsSource="{Binding AdjustmentHistory}"
+                              Style="{StaticResource ModernDataGrid}"
+                              ColumnHeaderStyle="{StaticResource ModernColumnHeader}"
+                              CellStyle="{StaticResource ModernDataGridCell}"
+                              RowStyle="{StaticResource ModernDataGridRow}"
+                              MaxHeight="300">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Date" Binding="{Binding AdjustedAt, StringFormat=g}" Width="160" />
+                            <DataGridTextColumn Header="Type" Binding="{Binding AdjustmentType}" Width="80" />
+                            <DataGridTextColumn Header="Qty" Binding="{Binding QuantityChange}" Width="80" />
+                            <DataGridTextColumn Header="Reason" Binding="{Binding Note}" Width="*" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+            </StackPanel>
+
+            <!-- ══════ Action Buttons ══════ -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,24">
+                <Button Style="{StaticResource ModernOutlinedButton}"
+                        Command="{Binding CancelCommand}" Margin="0,0,12,0" Padding="20,10">
+                    <TextBlock Text="Cancel" />
+                </Button>
+                <Button Style="{StaticResource ModernPrimaryButton}"
+                        Command="{Binding SaveItemCommand}" Padding="20,10">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ContentSaveOutline" Width="17" Height="17" VerticalAlignment="Center" Margin="0,0,6,0" />
+                        <TextBlock Text="Save Item" />
+                    </StackPanel>
+                </Button>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

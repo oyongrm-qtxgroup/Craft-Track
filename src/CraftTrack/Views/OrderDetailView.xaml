@@ -1,0 +1,400 @@
+<UserControl x:Class="CraftTrack.Views.OrderDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:CraftTrack.Converters"
+             xmlns:enums="clr-namespace:CraftTrack.Models.Enums">
+
+    <UserControl.Resources>
+        <converters:ImagePathConverter x:Key="ImagePathConverter" />
+    </UserControl.Resources>
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard Storyboard="{StaticResource FadeSlideIn}" />
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0">
+            <StackPanel MaxWidth="860" Margin="0,0,0,32">
+                <!-- Error Message -->
+                <Border Background="{DynamicResource DangerBgBrush}" CornerRadius="8" Padding="14,10" Margin="0,0,0,16"
+                        Visibility="{Binding ErrorMessage, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="AlertCircleOutline" Foreground="{DynamicResource DangerTextBrush}" Width="18" Height="18"
+                                                 VerticalAlignment="Center" Margin="0,0,8,0" />
+                        <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource DangerTextBrush}" FontSize="13" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Stock Warning -->
+                <Border Background="#FFF3E0" CornerRadius="8" Padding="14,10" Margin="0,0,0,16"
+                        Visibility="{Binding StockWarningMessage, Converter={StaticResource BoolToVisibility}}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="AlertOutline" Foreground="#E65100" Width="18" Height="18"
+                                                 VerticalAlignment="Top" Margin="0,2,8,0" />
+                        <TextBlock Text="{Binding StockWarningMessage}" Foreground="#E65100" FontSize="13"
+                                   VerticalAlignment="Center" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!-- ══════ Customer Section ══════ -->
+                <TextBlock Text="Customer Information" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource ModernCard}" Padding="24" Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                            <TextBox Text="{Binding CustomerName, UpdateSourceTrigger=PropertyChanged}"
+                                     materialDesign:HintAssist.Hint="Customer Name *"
+                                     Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                     TextChanged="CustomerName_TextChanged" />
+                            <Popup IsOpen="{Binding IsCustomerDropdownOpen}" StaysOpen="False"
+                                   PlacementTarget="{Binding ElementName=customerNameBox}"
+                                   Placement="Bottom" Width="300">
+                                <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                        CornerRadius="8" MaxHeight="200">
+                                    <ListBox ItemsSource="{Binding CustomerSuggestions}"
+                                             DisplayMemberPath="FullName"
+                                             SelectionChanged="CustomerSuggestion_Selected" />
+                                </Border>
+                            </Popup>
+                        </StackPanel>
+
+                        <TextBox Grid.Column="1" Text="{Binding CustomerPhone}"
+                                 materialDesign:HintAssist.Hint="Phone Number"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 Margin="12,0,0,0" />
+                    </Grid>
+                </Border>
+
+                <!-- ══════ Order Details Section ══════ -->
+                <TextBlock Text="Order Details" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource ModernCard}" Padding="24" Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <DatePicker Grid.Column="0" SelectedDate="{Binding DateOrdered}"
+                                    materialDesign:HintAssist.Hint="Date Ordered *"
+                                    Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                                    Margin="0,0,8,0" />
+
+                        <DatePicker Grid.Column="1" SelectedDate="{Binding DueDate}"
+                                    materialDesign:HintAssist.Hint="Due Date *"
+                                    Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                                    Margin="8,0,8,0" />
+
+                        <ComboBox Grid.Column="2" SelectedValue="{Binding Severity}"
+                                  SelectedValuePath="Tag"
+                                  materialDesign:HintAssist.Hint="Severity *"
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  Margin="8,0,8,0">
+                            <ComboBoxItem Content="Low" Tag="{x:Static enums:SeverityLevel.Low}" />
+                            <ComboBoxItem Content="High" Tag="{x:Static enums:SeverityLevel.High}" />
+                            <ComboBoxItem Content="Rush" Tag="{x:Static enums:SeverityLevel.Rush}" />
+                        </ComboBox>
+
+                        <ComboBox Grid.Column="3" SelectedValue="{Binding Status}"
+                                  SelectedValuePath="Tag"
+                                  materialDesign:HintAssist.Hint="Status"
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  Margin="8,0,0,0">
+                            <ComboBoxItem Content="Active" Tag="{x:Static enums:OrderStatus.Active}" />
+                            <ComboBoxItem Content="In Progress" Tag="{x:Static enums:OrderStatus.InProgress}" />
+                            <ComboBoxItem Content="Completed" Tag="{x:Static enums:OrderStatus.Completed}" />
+                            <ComboBoxItem Content="Cancelled" Tag="{x:Static enums:OrderStatus.Cancelled}" />
+                        </ComboBox>
+                    </Grid>
+                </Border>
+
+                <!-- ══════ Order Products Section ══════ -->
+                <DockPanel Margin="0,0,0,10">
+                    <TextBlock Text="Products" Style="{StaticResource SectionTitle}" DockPanel.Dock="Left"
+                               VerticalAlignment="Center" Margin="0" />
+                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right"
+                            Style="{StaticResource ModernOutlinedButton}"
+                            Command="{Binding OpenProductPickerCommand}" Padding="12,6">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Plus" Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,4,0" />
+                            <TextBlock Text="Add Product" FontSize="12.5" />
+                        </StackPanel>
+                    </Button>
+                </DockPanel>
+                <Border Style="{StaticResource ModernCard}" Padding="20" Margin="0,0,0,20">
+                    <StackPanel>
+                        <!-- Empty state -->
+                        <TextBlock Text="No products added. Click &quot;Add Product&quot; to select from your catalog."
+                                   FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
+                                   HorizontalAlignment="Center" Margin="0,12,0,12"
+                                   Visibility="{Binding OrderItems.Count, Converter={StaticResource InverseBoolToVisibility}}" />
+
+                        <!-- Order items list -->
+                        <ItemsControl ItemsSource="{Binding OrderItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="{DynamicResource BorderLightBrush}" BorderThickness="0,0,0,1" Padding="0,8" Margin="0,0,0,4">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="44" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="70" />
+                                                <ColumnDefinition Width="110" />
+                                                <ColumnDefinition Width="100" />
+                                                <ColumnDefinition Width="36" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Product thumbnail -->
+                                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="6"
+                                                    ClipToBounds="True" Background="{DynamicResource CardHoverBrush}"
+                                                    Margin="0,0,8,0">
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="PackageVariantClosed" Width="18" Height="18"
+                                                                             HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                             Foreground="{DynamicResource TextMutedBrush}" />
+                                                    <Image Source="{Binding ProductImagePath, Converter={StaticResource ImagePathConverter}}"
+                                                           Stretch="UniformToFill" />
+                                                </Grid>
+                                            </Border>
+
+                                            <!-- Product name -->
+                                            <TextBlock Grid.Column="1" Text="{Binding DisplayName}"
+                                                       VerticalAlignment="Center" FontWeight="Medium"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+
+                                            <!-- Quantity -->
+                                            <TextBox Grid.Column="2" Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                                                     materialDesign:HintAssist.Hint="Qty" Margin="0,0,8,0"
+                                                     VerticalAlignment="Center"
+                                                     TextChanged="OrderItem_Changed" />
+
+                                            <!-- Unit Price -->
+                                            <TextBox Grid.Column="3" Text="{Binding UnitPrice, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                                     materialDesign:HintAssist.Hint="Unit Price" Margin="0,0,8,0"
+                                                     VerticalAlignment="Center"
+                                                     TextChanged="OrderItem_Changed" />
+
+                                            <!-- Line total -->
+                                            <TextBlock Grid.Column="4" Text="{Binding LineTotal, Converter={StaticResource CurrencyConverter}}"
+                                                       VerticalAlignment="Center" FontWeight="SemiBold"
+                                                       Foreground="{DynamicResource TextPrimaryBrush}" />
+
+                                            <!-- Remove -->
+                                            <Button Grid.Column="5" Style="{StaticResource ModernIconButtonDanger}"
+                                                    Command="{Binding DataContext.RemoveOrderItemCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}" Width="28" Height="28">
+                                                <materialDesign:PackIcon Kind="Close" Width="14" Height="14" />
+                                            </Button>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Subtotal, Discount & Total -->
+                        <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Margin="0,12,0,0" Padding="0,14,0,0"
+                                Visibility="{Binding OrderItems.Count, Converter={StaticResource BoolToVisibility}}">
+                            <StackPanel HorizontalAlignment="Right" Margin="0,0,0,0">
+                                <!-- Subtotal -->
+                                <TextBlock FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" HorizontalAlignment="Right">
+                                    <Run Text="Subtotal: " />
+                                    <Run Text="{Binding SubTotal, Converter={StaticResource CurrencyConverter}, Mode=OneWay}" FontWeight="Medium" />
+                                </TextBlock>
+
+                                <!-- Discount row -->
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,8">
+                                    <TextBlock Text="Discount:" FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}"
+                                               VerticalAlignment="Center" Margin="0,0,10,0" />
+                                    <ComboBox SelectedValue="{Binding DiscountType}" SelectedValuePath="Tag"
+                                              Width="120" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="12">
+                                        <ComboBoxItem Content="None" Tag="{x:Static enums:DiscountType.None}" />
+                                        <ComboBoxItem Content="Percent (%)" Tag="{x:Static enums:DiscountType.Percentage}" />
+                                        <ComboBoxItem Content="Amount (₱)" Tag="{x:Static enums:DiscountType.FixedAmount}" />
+                                    </ComboBox>
+                                    <TextBox Text="{Binding DiscountValue, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                             Width="90" VerticalAlignment="Center" FontSize="13"
+                                             materialDesign:HintAssist.Hint="0.00"
+                                             TextChanged="OrderItem_Changed" />
+                                    <TextBlock FontSize="13" Foreground="{DynamicResource DangerBrush}" VerticalAlignment="Center"
+                                               Margin="10,0,0,0"
+                                               Visibility="{Binding DiscountAmount, Converter={StaticResource BoolToVisibility}}">
+                                        <Run Text="-" /><Run Text="{Binding DiscountAmount, Converter={StaticResource CurrencyConverter}, Mode=OneWay}" />
+                                    </TextBlock>
+                                </StackPanel>
+
+                                <!-- Total -->
+                                <TextBlock FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Right">
+                                    <Run Text="Total: " FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <Run Text="{Binding TotalPrice, Converter={StaticResource CurrencyConverter}, Mode=OneWay}" />
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+                <!-- ══════ Payment Section ══════ -->
+                <TextBlock Text="Payment" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource ModernCard}" Padding="24" Margin="0,0,0,20">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <ComboBox Grid.Column="0" SelectedValue="{Binding PaymentType}"
+                                  SelectedValuePath="Tag"
+                                  materialDesign:HintAssist.Hint="Payment Type"
+                                  Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  Margin="0,0,8,0">
+                            <ComboBoxItem Content="Unpaid" Tag="{x:Static enums:PaymentType.Unpaid}" />
+                            <ComboBoxItem Content="Downpayment" Tag="{x:Static enums:PaymentType.Downpayment}" />
+                            <ComboBoxItem Content="Full Payment" Tag="{x:Static enums:PaymentType.FullPayment}" />
+                        </ComboBox>
+
+                        <TextBox Grid.Column="1" Text="{Binding AmountPaid, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                 materialDesign:HintAssist.Hint="Amount Paid (₱)"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 Margin="8,0,8,0" />
+
+                        <Border Grid.Column="2" Background="{DynamicResource DangerBgBrush}" CornerRadius="10" Padding="16,10" Margin="8,0,0,0"
+                                VerticalAlignment="Center">
+                            <StackPanel>
+                                <TextBlock Text="Balance Due" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" FontWeight="Medium" />
+                                <TextBlock Text="{Binding BalanceDue, Converter={StaticResource CurrencyConverter}}"
+                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource DangerTextBrush}" Margin="0,2,0,0" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <!-- ══════ Notes ══════ -->
+                <TextBlock Text="Notes / Remarks" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource ModernCard}" Padding="20" Margin="0,0,0,24">
+                    <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             AcceptsReturn="True" TextWrapping="Wrap"
+                             MinHeight="80" MaxHeight="200" />
+                </Border>
+
+                <!-- ══════ Action Buttons ══════ -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,24">
+                    <Button Style="{StaticResource ModernOutlinedButton}"
+                            Command="{Binding CancelCommand}" Margin="0,0,12,0" Padding="20,10">
+                        <TextBlock Text="Cancel" />
+                    </Button>
+                    <Button Style="{StaticResource ModernPrimaryButton}"
+                            Command="{Binding SaveOrderCommand}" Padding="20,10">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="ContentSaveOutline" Width="17" Height="17" VerticalAlignment="Center" Margin="0,0,6,0" />
+                            <TextBlock Text="Save Order" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ══════ Product Picker Overlay ══════ -->
+        <Border Background="#80000000"
+                Visibility="{Binding IsProductPickerOpen, Converter={StaticResource BoolToVisibility}}"
+                MouseLeftButtonDown="ProductPickerOverlay_Click">
+            <Border Background="{DynamicResource CardBrush}" CornerRadius="16"
+                    MaxWidth="750" MaxHeight="600" Margin="40"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    MouseLeftButtonDown="ProductPickerCard_Click">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" Opacity="0.3" ShadowDepth="4" />
+                </Border.Effect>
+                <DockPanel Margin="24">
+                    <!-- Header -->
+                    <DockPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+                        <TextBlock Text="Select a Product" FontSize="18" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" DockPanel.Dock="Left" VerticalAlignment="Center" />
+                        <Button DockPanel.Dock="Right" Style="{StaticResource ModernIconButton}"
+                                Command="{Binding CloseProductPickerCommand}" HorizontalAlignment="Right"
+                                Width="32" Height="32">
+                            <materialDesign:PackIcon Kind="Close" Width="18" Height="18" />
+                        </Button>
+                    </DockPanel>
+
+                    <!-- Search -->
+                    <TextBox DockPanel.Dock="Top"
+                             Text="{Binding ProductSearchTerm, UpdateSourceTrigger=PropertyChanged, Delay=300}"
+                             materialDesign:HintAssist.Hint="Search products..."
+                             materialDesign:TextFieldAssist.HasLeadingIcon="True"
+                             materialDesign:TextFieldAssist.LeadingIcon="Magnify"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             Margin="0,0,0,16" />
+
+                    <!-- Product grid -->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding AvailableProducts}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="200" Margin="0,0,12,12" Cursor="Hand"
+                                            Background="{DynamicResource SurfaceBrush}" CornerRadius="10"
+                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                                        <Border.InputBindings>
+                                            <MouseBinding MouseAction="LeftClick"
+                                                          Command="{Binding DataContext.SelectProductCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                          CommandParameter="{Binding}" />
+                                        </Border.InputBindings>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource PrimaryBrush}" />
+                                                        <Setter Property="BorderThickness" Value="2" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="120" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <Border Grid.Row="0" CornerRadius="10,10,0,0" ClipToBounds="True"
+                                                    Background="{DynamicResource CardHoverBrush}">
+                                                <Grid>
+                                                    <materialDesign:PackIcon Kind="ImageOutline" Width="36" Height="36"
+                                                                             HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                             Foreground="{DynamicResource TextMutedBrush}" />
+                                                    <Image Source="{Binding ImagePath, Converter={StaticResource ImagePathConverter}}"
+                                                           Stretch="UniformToFill" />
+                                                </Grid>
+                                            </Border>
+
+                                            <StackPanel Grid.Row="1" Margin="12,8,12,10">
+                                                <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                                           TextTrimming="CharacterEllipsis" />
+                                                <TextBlock Text="{Binding DefaultPrice, Converter={StaticResource CurrencyConverter}}"
+                                                           FontSize="14" FontWeight="Bold"
+                                                           Foreground="{DynamicResource PrimaryBrush}" Margin="0,2,0,0" />
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
+        </Border>
+    </Grid>
+</UserControl>

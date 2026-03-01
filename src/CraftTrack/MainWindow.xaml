@@ -1,0 +1,162 @@
+﻿<Window x:Class="CraftTrack.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:vm="clr-namespace:CraftTrack.ViewModels"
+        mc:Ignorable="d"
+        Title="The Oyong's Ink &amp; Print Studio — CraftTrack"
+        Icon="Assets/logo.png"
+        Height="768" Width="1280"
+        MinHeight="600" MinWidth="960"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource SurfaceBrush}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ══════ Sidebar ══════ -->
+        <Border Grid.Column="0" Background="{DynamicResource SidebarGradient}" CornerRadius="0,20,20,0">
+            <DockPanel>
+                <!-- Logo / Brand -->
+                <Border DockPanel.Dock="Top" Margin="24,28,24,0">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Border CornerRadius="10" Margin="0,0,12,0" Width="44" Height="44">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="Assets/logo.png" Stretch="UniformToFill" />
+                                </Border.Background>
+                            </Border>
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="Oyong's Ink" FontSize="18" FontWeight="Bold" Foreground="White" />
+                                <TextBlock Text="&amp; Print Studio" FontSize="10.5"
+                                           Foreground="{DynamicResource SidebarSubtitleBrush}" Margin="0,1,0,0" FontWeight="Medium" />
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Divider -->
+                <Border DockPanel.Dock="Top" Height="1" Background="{DynamicResource SidebarDividerBrush}" Margin="24,20,24,8" />
+
+                <!-- Navigation -->
+                <ScrollViewer DockPanel.Dock="Top" VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="8,4,8,8">
+                        <!-- Section: Main -->
+                        <TextBlock Text="MAIN" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource SidebarSectionBrush}"
+                                   Margin="14,8,0,6" />
+
+                        <ListBox Style="{x:Null}" Background="Transparent" BorderThickness="0">
+                            <ListBoxItem Style="{StaticResource NavItem}" MouseLeftButtonUp="NavDashboard_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ViewDashboardOutline" Width="20" Height="20"
+                                                             Foreground="{DynamicResource SidebarIconBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Dashboard" Foreground="White" FontSize="13.5"
+                                               VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
+                                </StackPanel>
+                            </ListBoxItem>
+
+                            <ListBoxItem Style="{StaticResource NavItem}" MouseLeftButtonUp="NavOrders_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ClipboardTextOutline" Width="20" Height="20"
+                                                             Foreground="{DynamicResource SidebarIconBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Orders" Foreground="White" FontSize="13.5"
+                                               VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
+                                </StackPanel>
+                            </ListBoxItem>
+
+                            <ListBoxItem Style="{StaticResource NavItem}" MouseLeftButtonUp="NavCustomers_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="AccountGroupOutline" Width="20" Height="20"
+                                                             Foreground="{DynamicResource SidebarIconBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Customers" Foreground="White" FontSize="13.5"
+                                               VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
+                                </StackPanel>
+                            </ListBoxItem>
+
+                            <ListBoxItem Style="{StaticResource NavItem}" MouseLeftButtonUp="NavInventory_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="PackageVariantClosed" Width="20" Height="20"
+                                                             Foreground="{DynamicResource SidebarIconBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Inventory" Foreground="White" FontSize="13.5"
+                                               VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
+                                </StackPanel>
+                            </ListBoxItem>
+
+                            <ListBoxItem Style="{StaticResource NavItem}" MouseLeftButtonUp="NavProducts_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="TagMultipleOutline" Width="20" Height="20"
+                                                             Foreground="{DynamicResource SidebarIconBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Products" Foreground="White" FontSize="13.5"
+                                               VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
+                                </StackPanel>
+                            </ListBoxItem>
+                        </ListBox>
+
+                        <!-- Section: System -->
+                        <TextBlock Text="SYSTEM" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource SidebarSectionBrush}"
+                                   Margin="14,14,0,6" />
+
+                        <ListBox Style="{x:Null}" Background="Transparent" BorderThickness="0">
+                            <ListBoxItem Style="{StaticResource NavItem}" MouseLeftButtonUp="NavNotifications_Click">
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon Kind="BellOutline" Width="20" Height="20"
+                                                                 Foreground="{DynamicResource SidebarIconBrush}" VerticalAlignment="Center" />
+                                        <TextBlock Text="Notifications" Foreground="White" FontSize="13.5"
+                                                   VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
+                                    </StackPanel>
+                                    <!-- Badge -->
+                                    <Border Background="{DynamicResource NotifBadgeBrush}" CornerRadius="10" MinWidth="20" Height="20"
+                                            Padding="6,0" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                            Visibility="{Binding HasNotifications, Converter={StaticResource BoolToVisibility}}">
+                                        <TextBlock Text="{Binding NotificationBadgeCount}" Foreground="White"
+                                                   FontSize="11" FontWeight="Bold" HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center" />
+                                    </Border>
+                                </Grid>
+                            </ListBoxItem>
+
+                            <ListBoxItem Style="{StaticResource NavItem}" MouseLeftButtonUp="NavSettings_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="CogOutline" Width="20" Height="20"
+                                                             Foreground="{DynamicResource SidebarIconBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Settings" Foreground="White" FontSize="13.5"
+                                               VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
+                                </StackPanel>
+                            </ListBoxItem>
+                        </ListBox>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Bottom spacer -->
+                <Border />
+            </DockPanel>
+        </Border>
+
+        <!-- ══════ Main Content ══════ -->
+        <Border Grid.Column="1" Margin="0">
+            <DockPanel>
+                <!-- Header Bar -->
+                <Border DockPanel.Dock="Top" Padding="32,20" Background="Transparent">
+                    <Grid>
+                        <TextBlock Text="{Binding CurrentViewTitle}"
+                                   FontSize="22" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+                </Border>
+
+                <!-- Content area with fade animation -->
+                <Border Margin="24,0,24,24">
+                    <ContentControl Content="{Binding CurrentView}" />
+                </Border>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

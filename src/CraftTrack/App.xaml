@@ -1,0 +1,66 @@
+﻿<Application x:Class="CraftTrack.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:CraftTrack"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:CraftTrack.Converters"
+             xmlns:vm="clr-namespace:CraftTrack.ViewModels"
+             xmlns:views="clr-namespace:CraftTrack.Views">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="DeepPurple" SecondaryColor="Pink" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
+                <ResourceDictionary Source="Themes/Colors.Light.xaml" />
+                <ResourceDictionary Source="Themes/ModernTheme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- Converters -->
+            <converters:CurrencyFormatConverter x:Key="CurrencyConverter" />
+            <converters:SeverityToColorConverter x:Key="SeverityColorConverter" />
+            <converters:PaymentStatusToColorConverter x:Key="PaymentColorConverter" />
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibility" />
+            <converters:BoolToVisibilityConverter x:Key="InverseBoolToVisibility" Invert="True" />
+            <converters:EnumDescriptionConverter x:Key="EnumDescriptionConverter" />
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:ExpenseCategoryColorConverter x:Key="ExpenseCategoryColorConverter" />
+            <converters:PercentageToGridLengthConverter x:Key="PctToGridLength" />
+            <converters:PercentageRemainderConverter x:Key="PctRemainder" />
+
+            <!-- View-ViewModel DataTemplates -->
+            <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+                <views:DashboardView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:OrderListViewModel}">
+                <views:OrderListView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:OrderDetailViewModel}">
+                <views:OrderDetailView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CustomerListViewModel}">
+                <views:CustomerListView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:CustomerProfileViewModel}">
+                <views:CustomerProfileView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:InventoryListViewModel}">
+                <views:InventoryListView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:InventoryDetailViewModel}">
+                <views:InventoryDetailView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ProductListViewModel}">
+                <views:ProductListView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ProductDetailViewModel}">
+                <views:ProductDetailView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:NotificationCenterViewModel}">
+                <views:NotificationCenterView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+                <views:SettingsView />
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

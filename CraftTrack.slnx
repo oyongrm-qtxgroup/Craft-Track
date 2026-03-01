@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/CraftTrack.NotificationAgent/CraftTrack.NotificationAgent.csproj" />
+    <Project Path="src/CraftTrack/CraftTrack.csproj" />
+  </Folder>
+</Solution>

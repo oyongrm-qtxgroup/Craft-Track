@@ -1,0 +1,353 @@
+<UserControl x:Class="CraftTrack.Views.DashboardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:CraftTrack.Converters"
+             xmlns:vm="clr-namespace:CraftTrack.ViewModels">
+
+    <UserControl.Resources>
+        <converters:ImagePathConverter x:Key="ImagePathConverter" />
+    </UserControl.Resources>
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard Storyboard="{StaticResource FadeSlideIn}" />
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <Grid>
+        <!-- Loading overlay -->
+        <Grid Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}"
+              Panel.ZIndex="10" Background="{DynamicResource LoadingOverlayBrush}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <ProgressBar Style="{StaticResource ModernSpinner}" />
+                <TextBlock Text="Loading dashboard..." Margin="0,14,0,0"
+                           Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13" HorizontalAlignment="Center" />
+            </StackPanel>
+        </Grid>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0">
+            <StackPanel>
+
+                <!-- ══════ Stat Cards Row ══════ -->
+                <UniformGrid Columns="4" Margin="0,0,0,20">
+                    <!-- Active Orders -->
+                    <Border Style="{StaticResource StatCard}" Margin="0,0,14,0">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="ACTIVE ORDERS" Style="{StaticResource StatLabel}" />
+                                <TextBlock Text="{Binding ActiveOrderCount}" Style="{StaticResource StatNumber}"
+                                           Foreground="{DynamicResource AccentBrush}" />
+                            </StackPanel>
+                            <Border Background="{DynamicResource StatIconBg1}" CornerRadius="10" Width="42" Height="42"
+                                    HorizontalAlignment="Right" VerticalAlignment="Top">
+                                <materialDesign:PackIcon Kind="ClipboardTextOutline" Width="22" Height="22"
+                                                         Foreground="{DynamicResource StatIconFg1}"
+                                                         HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Rush / High Priority -->
+                    <Border Style="{StaticResource StatCard}" Margin="7,0">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="RUSH / HIGH" Style="{StaticResource StatLabel}" />
+                                <TextBlock Text="{Binding RushHighPriorityCount}" Style="{StaticResource StatNumber}"
+                                           Foreground="{DynamicResource WarningBrush}" />
+                            </StackPanel>
+                            <Border Background="{DynamicResource StatIconBg2}" CornerRadius="10" Width="42" Height="42"
+                                    HorizontalAlignment="Right" VerticalAlignment="Top">
+                                <materialDesign:PackIcon Kind="AlertCircleOutline" Width="22" Height="22"
+                                                         Foreground="{DynamicResource StatIconFg2}"
+                                                         HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Overdue -->
+                    <Border Style="{StaticResource StatCard}" Margin="7,0">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="OVERDUE" Style="{StaticResource StatLabel}" />
+                                <TextBlock Text="{Binding OverdueOrderCount}" Style="{StaticResource StatNumber}"
+                                           Foreground="{DynamicResource DangerBrush}" />
+                            </StackPanel>
+                            <Border Background="{DynamicResource StatIconBg3}" CornerRadius="10" Width="42" Height="42"
+                                    HorizontalAlignment="Right" VerticalAlignment="Top">
+                                <materialDesign:PackIcon Kind="ClockAlertOutline" Width="22" Height="22"
+                                                         Foreground="{DynamicResource StatIconFg3}"
+                                                         HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <!-- Low Stock -->
+                    <Border Style="{StaticResource StatCard}" Margin="14,0,0,0">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="LOW STOCK" Style="{StaticResource StatLabel}" />
+                                <TextBlock Text="{Binding LowStockCount}" Style="{StaticResource StatNumber}"
+                                           Foreground="{DynamicResource StatIconFg4}" />
+                            </StackPanel>
+                            <Border Background="{DynamicResource StatIconBg4}" CornerRadius="10" Width="42" Height="42"
+                                    HorizontalAlignment="Right" VerticalAlignment="Top">
+                                <materialDesign:PackIcon Kind="PackageVariantRemove" Width="22" Height="22"
+                                                         Foreground="{DynamicResource StatIconFg4}"
+                                                         HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                        </Grid>
+                    </Border>
+                </UniformGrid>
+
+                <!-- ══════ Financial Summary Row (4 gradient cards) ══════ -->
+                <UniformGrid Columns="4" Margin="0,0,0,24">
+                    <!-- Revenue -->
+                    <Border CornerRadius="14" Padding="20,16" Margin="0,0,10,0"
+                            Effect="{StaticResource CardShadow}"
+                            Background="{DynamicResource RevenueGradient}">
+                        <StackPanel>
+                            <TextBlock Text="REVENUE" FontSize="10" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource RevenueSubtitleBrush}" />
+                            <TextBlock Text="{Binding MonthlyRevenue, Converter={StaticResource CurrencyConverter}}"
+                                       FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <materialDesign:PackIcon Kind="TrendingUp" Width="14" Height="14"
+                                                         Foreground="{DynamicResource RevenueSubtitleBrush}" />
+                                <TextBlock Text="This month" FontSize="10" Opacity="0.8"
+                                           Foreground="{DynamicResource RevenueSubtitleBrush}" Margin="4,0,0,0" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Orders This Month -->
+                    <Border CornerRadius="14" Padding="20,16" Margin="5,0"
+                            Effect="{StaticResource CardShadow}"
+                            Background="{DynamicResource ExpenseGradient}">
+                        <StackPanel>
+                            <TextBlock Text="ORDERS" FontSize="10" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ExpenseSubtitleBrush}" />
+                            <TextBlock Text="{Binding OrdersThisMonth}"
+                                       FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <materialDesign:PackIcon Kind="ClipboardListOutline" Width="14" Height="14"
+                                                         Foreground="{DynamicResource ExpenseSubtitleBrush}" />
+                                <TextBlock Text="This month" FontSize="10" Opacity="0.8"
+                                           Foreground="{DynamicResource ExpenseSubtitleBrush}" Margin="4,0,0,0" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Products -->
+                    <Border CornerRadius="14" Padding="20,16" Margin="5,0"
+                            Effect="{StaticResource CardShadow}"
+                            Background="{DynamicResource ProfitGradient}">
+                        <StackPanel>
+                            <TextBlock Text="PRODUCTS" FontSize="10" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource ProfitSubtitleBrush}" />
+                            <TextBlock Text="{Binding ProductCount}"
+                                       FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <materialDesign:PackIcon Kind="TagMultipleOutline" Width="14" Height="14"
+                                                         Foreground="{DynamicResource ProfitSubtitleBrush}" />
+                                <TextBlock Text="In catalog" FontSize="10" Opacity="0.8"
+                                           Foreground="{DynamicResource ProfitSubtitleBrush}" Margin="4,0,0,0" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Outstanding -->
+                    <Border CornerRadius="14" Padding="20,16" Margin="10,0,0,0"
+                            Effect="{StaticResource CardShadow}"
+                            Background="{DynamicResource OutstandingGradient}">
+                        <StackPanel>
+                            <TextBlock Text="OUTSTANDING" FontSize="10" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource OutstandingSubtitleBrush}" />
+                            <TextBlock Text="{Binding UnpaidBalance, Converter={StaticResource CurrencyConverter}}"
+                                       FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                <materialDesign:PackIcon Kind="CashRemove" Width="14" Height="14"
+                                                         Foreground="{DynamicResource OutstandingSubtitleBrush}" />
+                                <TextBlock Text="Unpaid balance" FontSize="10" Opacity="0.8"
+                                           Foreground="{DynamicResource OutstandingSubtitleBrush}" Margin="4,0,0,0" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+
+                <!-- ══════ Top Products Chart + Quick Actions side-by-side ══════ -->
+                <Grid Margin="0,0,0,24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="14" />
+                        <ColumnDefinition Width="320" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Top Products Horizontal Bar Chart -->
+                    <Border Grid.Column="0" Style="{StaticResource ModernCard}">
+                        <StackPanel>
+                            <TextBlock Text="Top Products" FontSize="15" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,16" />
+
+                            <ItemsControl ItemsSource="{Binding TopProducts}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,0,0,10">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Label row -->
+                                            <Grid Grid.Row="0" Margin="0,0,0,4">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Border Width="22" Height="22" CornerRadius="4" ClipToBounds="True"
+                                                            Background="{DynamicResource CardHoverBrush}" VerticalAlignment="Center">
+                                                        <Grid>
+                                                            <materialDesign:PackIcon Kind="PackageVariantClosed" Width="12" Height="12"
+                                                                                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                                                     Foreground="{DynamicResource TextMutedBrush}" />
+                                                            <Image Source="{Binding ImagePath, Converter={StaticResource ImagePathConverter}}"
+                                                                   Stretch="UniformToFill" />
+                                                        </Grid>
+                                                    </Border>
+                                                    <TextBlock Text="{Binding ProductName}" FontSize="12" FontWeight="Medium"
+                                                               Foreground="{DynamicResource TextPrimaryBrush}"
+                                                               VerticalAlignment="Center" Margin="8,0,0,0" />
+                                                    <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}"
+                                                               VerticalAlignment="Center" Margin="8,0,0,0">
+                                                        <Run Text="(" /><Run Text="{Binding OrderCount, Mode=OneWay}" /><Run Text=" orders)" />
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                <TextBlock Text="{Binding TotalRevenue, Converter={StaticResource CurrencyConverter}}"
+                                                           FontSize="12" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                                           HorizontalAlignment="Right" />
+                                            </Grid>
+
+                                            <!-- Bar row -->
+                                            <Grid Grid.Row="1" Height="10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="{Binding Percentage, Converter={StaticResource PctToGridLength}}" />
+                                                    <ColumnDefinition Width="{Binding Percentage, Converter={StaticResource PctRemainder}}" />
+                                                </Grid.ColumnDefinitions>
+                                                <Border Grid.Column="0" CornerRadius="5"
+                                                        Background="{DynamicResource PrimaryBrush}" />
+                                                <Border Grid.Column="1" CornerRadius="0,5,5,0"
+                                                        Background="{DynamicResource ChartBarTrack}" />
+                                            </Grid>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <TextBlock Text="No product orders yet"
+                                       Visibility="{Binding TopProducts.Count, Converter={StaticResource InverseBoolToVisibility}, FallbackValue=Collapsed}"
+                                       FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}"
+                                       HorizontalAlignment="Center" Margin="0,10,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Quick Actions -->
+                    <Border Grid.Column="2" Style="{StaticResource ModernCard}">
+                        <StackPanel>
+                            <TextBlock Text="Quick Actions" FontSize="15" FontWeight="SemiBold"
+                                       Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,16" />
+
+                            <Button Style="{StaticResource ModernPrimaryButton}" Command="{Binding AddNewOrderCommand}"
+                                    HorizontalAlignment="Stretch" Margin="0,0,0,10">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="Plus" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                    <TextBlock Text="New Order" />
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource ModernPrimaryButton}" Command="{Binding AddNewProductCommand}"
+                                    HorizontalAlignment="Stretch" Margin="0,0,0,10"
+                                    Background="{DynamicResource AccentBrush}" BorderBrush="{DynamicResource AccentBrush}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="Plus" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                    <TextBlock Text="New Product" />
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource ModernOutlinedButton}" Command="{Binding AddInventoryItemCommand}"
+                                    HorizontalAlignment="Stretch">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="Plus" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                    <TextBlock Text="Inventory Item" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- ══════ Two-Column: Deadlines + Recent Orders ══════ -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="14" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Upcoming Deadlines -->
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Upcoming Deadlines" Style="{StaticResource SectionTitle}" />
+                        <Border Style="{StaticResource ModernCard}" Padding="0">
+                            <DataGrid ItemsSource="{Binding UpcomingDeadlines}"
+                                      Style="{StaticResource ModernDataGrid}"
+                                      ColumnHeaderStyle="{StaticResource ModernColumnHeader}"
+                                      CellStyle="{StaticResource ModernDataGridCell}"
+                                      RowStyle="{StaticResource ModernDataGridRow}"
+                                      MaxHeight="300">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Order #" Binding="{Binding Id}" Width="70" />
+                                    <DataGridTextColumn Header="Customer" Binding="{Binding Customer.FullName}" Width="*" />
+                                    <DataGridTextColumn Header="Due" Binding="{Binding DueDate, StringFormat=MMM d}" Width="70" />
+                                    <DataGridTemplateColumn Header="" Width="60">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{Binding Severity, Converter={StaticResource SeverityColorConverter}}"
+                                                        Style="{StaticResource Pill}">
+                                                    <TextBlock Text="{Binding Severity}" Style="{StaticResource PillText}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Recent Orders -->
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Recent Orders" Style="{StaticResource SectionTitle}" />
+                        <Border Style="{StaticResource ModernCard}" Padding="0">
+                            <DataGrid ItemsSource="{Binding RecentOrders}"
+                                      Style="{StaticResource ModernDataGrid}"
+                                      ColumnHeaderStyle="{StaticResource ModernColumnHeader}"
+                                      CellStyle="{StaticResource ModernDataGridCell}"
+                                      RowStyle="{StaticResource ModernDataGridRow}"
+                                      MaxHeight="300">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Order #" Binding="{Binding Id}" Width="70" />
+                                    <DataGridTextColumn Header="Customer" Binding="{Binding Customer.FullName}" Width="*" />
+                                    <DataGridTextColumn Header="Total" Binding="{Binding TotalPrice, Converter={StaticResource CurrencyConverter}}" Width="90" />
+                                    <DataGridTemplateColumn Header="" Width="60">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{Binding PaymentType, Converter={StaticResource PaymentColorConverter}}"
+                                                        Style="{StaticResource Pill}">
+                                                    <TextBlock Text="{Binding PaymentType}" Style="{StaticResource PillText}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
