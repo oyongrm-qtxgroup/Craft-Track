@@ -132,7 +132,7 @@
                                 <TextBlock Text="TOTAL REVENUE" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource RevenueSubtitleBrush}" />
                                 <TextBlock Text="{Binding TotalRevenue, Converter={StaticResource CurrencyConverter}}"
-                                           FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="24" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="Sum of all order totals" FontSize="9"
                                            Foreground="{DynamicResource RevenueSubtitleBrush}" Margin="0,2,0,0" />
                             </StackPanel>
@@ -144,7 +144,7 @@
                                 <TextBlock Text="TOTAL ORDERS" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource ProfitSubtitleBrush}" />
                                 <TextBlock Text="{Binding TotalOrders}"
-                                           FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="24" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock FontSize="9" Foreground="{DynamicResource ProfitSubtitleBrush}" Margin="0,2,0,0">
                                     <TextBlock.Text>
                                         <MultiBinding StringFormat="Avg: {0}">
@@ -171,7 +171,7 @@
                                 <TextBlock Text="NET PROFIT" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource OverlayTextBrush}" />
                                 <TextBlock Text="{Binding NetProfit, Converter={StaticResource CurrencyConverter}}"
-                                           FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="24" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="Revenue − Expenses" FontSize="9"
                                            Foreground="{DynamicResource OverlayTextBrush}" Margin="0,2,0,0" />
                             </StackPanel>
@@ -187,7 +187,7 @@
                                 <TextBlock Text="TOTAL EXPENSES" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource ExpenseSubtitleBrush}" />
                                 <TextBlock Text="{Binding TotalExpenses, Converter={StaticResource CurrencyConverter}}"
-                                           FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="All business expenses" FontSize="9"
                                            Foreground="{DynamicResource ExpenseSubtitleBrush}" Margin="0,2,0,0" />
                             </StackPanel>
@@ -199,7 +199,7 @@
                                 <TextBlock Text="OUTSTANDING" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource OutstandingSubtitleBrush}" />
                                 <TextBlock Text="{Binding OutstandingBalance, Converter={StaticResource CurrencyConverter}}"
-                                           FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="∑ (Order Total − Paid)" FontSize="9"
                                            Foreground="{DynamicResource OutstandingSubtitleBrush}" Margin="0,2,0,0" />
                             </StackPanel>
@@ -209,11 +209,11 @@
                                 Effect="{StaticResource CardShadow}" Background="{DynamicResource RejectGradient}">
                             <StackPanel>
                                 <TextBlock Text="REJECTION LOSSES" FontSize="10" FontWeight="SemiBold"
-                                           Foreground="#FECACA" />
+                                           Foreground="{DynamicResource RejectSubtitleBrush}" />
                                 <TextBlock Text="{Binding RejectionLosses, Converter={StaticResource CurrencyConverter}}"
-                                           FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="{Binding RejectCount, StringFormat='{}{0} rejected × material cost'}" FontSize="9"
-                                           Foreground="#FECACA" Margin="0,2,0,0" />
+                                           Foreground="{DynamicResource RejectSubtitleBrush}" Margin="0,2,0,0" />
                             </StackPanel>
                         </Border>
                         <!-- Products -->
@@ -223,7 +223,7 @@
                                 <TextBlock Text="PRODUCTS" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource ProfitSubtitleBrush}" />
                                 <TextBlock Text="{Binding ProductCount}"
-                                           FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="Listed in catalog" FontSize="9"
                                            Foreground="{DynamicResource ProfitSubtitleBrush}" Margin="0,2,0,0" />
                             </StackPanel>

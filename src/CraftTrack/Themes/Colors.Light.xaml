@@ -194,4 +194,11 @@
     <SolidColorBrush x:Key="TabInactiveBgBrush"    Color="#F1F5F9" />
     <SolidColorBrush x:Key="TabInactiveFgBrush"    Color="#64748B" />
 
+    <!-- Formerly hardcoded colors (now themed) -->
+    <SolidColorBrush x:Key="RejectSubtitleBrush"   Color="#FECACA" />
+    <SolidColorBrush x:Key="OverlayBackdropBrush"  Color="#80000000" />
+    <SolidColorBrush x:Key="WarningBannerBgBrush"  Color="#FFF3E0" />
+    <SolidColorBrush x:Key="WarningBannerFgBrush"  Color="#E65100" />
+    <SolidColorBrush x:Key="GradientCardTextBrush" Color="#FFFFFF" />
+
 </ResourceDictionary>

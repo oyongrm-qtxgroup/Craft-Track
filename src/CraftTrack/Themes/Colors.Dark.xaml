@@ -19,10 +19,10 @@
     <SolidColorBrush x:Key="BorderBrush"           Color="#334155" />
     <SolidColorBrush x:Key="BorderLightBrush"      Color="#1E293B" />
 
-    <!-- Text -->
+    <!-- Text — improved dark mode contrast -->
     <SolidColorBrush x:Key="TextPrimaryBrush"      Color="#F1F5F9" />
-    <SolidColorBrush x:Key="TextSecondaryBrush"    Color="#94A3B8" />
-    <SolidColorBrush x:Key="TextMutedBrush"        Color="#64748B" />
+    <SolidColorBrush x:Key="TextSecondaryBrush"    Color="#CBD5E1" />
+    <SolidColorBrush x:Key="TextMutedBrush"        Color="#94A3B8" />
 
     <!-- Status -->
     <SolidColorBrush x:Key="DangerBrush"           Color="#F87171" />
@@ -40,11 +40,11 @@
     <SolidColorBrush x:Key="SidebarLogoBgBrush"    Color="#26FFFFFF" />
     <SolidColorBrush x:Key="SidebarDividerBrush"   Color="#1AFFFFFF" />
 
-    <!-- DataGrid -->
+    <!-- DataGrid — improved dark mode hover/selected differentiation -->
     <SolidColorBrush x:Key="ColumnHeaderBgBrush"   Color="#1E293B" />
     <SolidColorBrush x:Key="RowBorderBrush"        Color="#334155" />
-    <SolidColorBrush x:Key="RowHoverBrush"         Color="#500724" />
-    <SolidColorBrush x:Key="RowSelectedBrush"      Color="#831843" />
+    <SolidColorBrush x:Key="RowHoverBrush"         Color="#2D3A50" />
+    <SolidColorBrush x:Key="RowSelectedBrush"      Color="#3B2660" />
 
     <!-- Interactive States -->
     <SolidColorBrush x:Key="SearchBgBrush"         Color="#1E293B" />
@@ -126,13 +126,13 @@
     <SolidColorBrush x:Key="NotifDue1DayBrush"     Color="#FDBA74" />
     <SolidColorBrush x:Key="NotifDue3DayBrush"     Color="#FDE68A" />
 
-    <!-- Severity (status pills) -->
-    <SolidColorBrush x:Key="RushColor"             Color="#E53935" />
-    <SolidColorBrush x:Key="HighColor"             Color="#FB8C00" />
-    <SolidColorBrush x:Key="LowColor"              Color="#43A047" />
-    <SolidColorBrush x:Key="PaidColor"             Color="#43A047" />
-    <SolidColorBrush x:Key="PartialColor"          Color="#FB8C00" />
-    <SolidColorBrush x:Key="UnpaidColor"           Color="#E53935" />
+    <!-- Severity (status pills) — improved dark mode contrast -->
+    <SolidColorBrush x:Key="RushColor"             Color="#F87171" />
+    <SolidColorBrush x:Key="HighColor"             Color="#FBBF24" />
+    <SolidColorBrush x:Key="LowColor"              Color="#4ADE80" />
+    <SolidColorBrush x:Key="PaidColor"             Color="#4ADE80" />
+    <SolidColorBrush x:Key="PartialColor"          Color="#FBBF24" />
+    <SolidColorBrush x:Key="UnpaidColor"           Color="#F87171" />
 
     <!-- Customer Profile -->
     <SolidColorBrush x:Key="RevenueCardBgBrush"    Color="#052E16" />
@@ -193,5 +193,12 @@
     <SolidColorBrush x:Key="TabActiveFgBrush"      Color="#0F172A" />
     <SolidColorBrush x:Key="TabInactiveBgBrush"    Color="#1E293B" />
     <SolidColorBrush x:Key="TabInactiveFgBrush"    Color="#94A3B8" />
+
+    <!-- Formerly hardcoded colors (now themed) -->
+    <SolidColorBrush x:Key="RejectSubtitleBrush"   Color="#FCA5A5" />
+    <SolidColorBrush x:Key="OverlayBackdropBrush"  Color="#99000000" />
+    <SolidColorBrush x:Key="WarningBannerBgBrush"  Color="#332200" />
+    <SolidColorBrush x:Key="WarningBannerFgBrush"  Color="#FFB74D" />
+    <SolidColorBrush x:Key="GradientCardTextBrush" Color="#FFFFFF" />
 
 </ResourceDictionary>

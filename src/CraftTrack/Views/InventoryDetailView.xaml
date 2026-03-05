@@ -203,7 +203,7 @@
     </ScrollViewer>
 
     <!-- ══════ Reject Dialog Overlay ══════ -->
-    <Border Background="#80000000"
+    <Border Background="{DynamicResource OverlayBackdropBrush}"
             Visibility="{Binding IsRejectDialogOpen, Converter={StaticResource BoolToVisibility}}">
         <Border Background="{DynamicResource CardBrush}" CornerRadius="16"
                 MaxWidth="460" Margin="40" Padding="28"

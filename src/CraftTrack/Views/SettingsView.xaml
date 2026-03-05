@@ -4,6 +4,16 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:models="clr-namespace:CraftTrack.Models">
 
+    <UserControl.Resources>
+        <!-- Converts a Color to a SolidColorBrush for swatch display -->
+        <Style x:Key="SwatchRect" TargetType="Rectangle">
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="RadiusX" Value="8" />
+            <Setter Property="RadiusY" Value="8" />
+        </Style>
+    </UserControl.Resources>
+
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard Storyboard="{StaticResource FadeSlideIn}" />
@@ -142,6 +152,227 @@
                     </StackPanel>
                 </Border>
             </UniformGrid>
+
+            <!-- ══════ Color Scheme Section ══════ -->
+            <TextBlock Text="Color Scheme" Style="{StaticResource SectionTitle}" FontSize="17" />
+            <TextBlock Text="Pick a preset or customize individual colors. Changes apply instantly."
+                       Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"
+                       Margin="0,0,0,16" />
+
+            <!-- Preset Selector -->
+            <ItemsControl ItemsSource="{Binding Presets}" Margin="0,0,0,16">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:ColorScheme}">
+                        <Border x:Name="PresetCard" CornerRadius="10" Padding="12,10" Margin="0,0,8,8"
+                                Cursor="Hand" BorderThickness="2"
+                                MouseLeftButtonUp="PresetCard_Click"
+                                Tag="{Binding Name}">
+                            <Border.Style>
+                                <Style TargetType="Border">
+                                    <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+                                    <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Value="True">
+                                            <DataTrigger.Binding>
+                                                <MultiBinding Converter="{StaticResource StringEqualityConverter}">
+                                                    <Binding Path="Name" />
+                                                    <Binding Path="DataContext.SelectedPresetName"
+                                                             RelativeSource="{RelativeSource AncestorType=UserControl}" />
+                                                </MultiBinding>
+                                            </DataTrigger.Binding>
+                                            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Ellipse Width="18" Height="18" Margin="0,0,8,0">
+                                    <Ellipse.Fill>
+                                        <SolidColorBrush Color="{Binding AccentColor, Converter={StaticResource HexToColorConverter}}" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <Ellipse Width="18" Height="18" Margin="0,0,10,0">
+                                    <Ellipse.Fill>
+                                        <SolidColorBrush Color="{Binding SecondaryColor, Converter={StaticResource HexToColorConverter}}" />
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Medium"
+                                           Foreground="{DynamicResource TextPrimaryBrush}"
+                                           VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Custom Color Pickers -->
+            <Border CornerRadius="14" Padding="24"
+                    Background="{DynamicResource CardBrush}"
+                    BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                    Margin="0,0,0,12">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12" ShadowDepth="2" Opacity="0.06" Color="Black" />
+                </Border.Effect>
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,16">
+                        <TextBlock Text="Custom Colors" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                        <!-- Custom indicator + Reset -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"
+                                    Visibility="{Binding IsCustom, Converter={StaticResource BoolToVisibility}}">
+                            <Border CornerRadius="8" Background="{DynamicResource WarningBgBrush}" Padding="8,3" Margin="0,0,8,0">
+                                <TextBlock Text="Modified" FontSize="10" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource WarningTextBrush}" />
+                            </Border>
+                            <Button Content="Reset" FontSize="11" Padding="10,3"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Foreground="{DynamicResource AccentBrush}"
+                                    Command="{Binding ResetToPresetCommand}" />
+                        </StackPanel>
+                    </DockPanel>
+
+                    <!-- Color grid: 2 rows × 3 columns -->
+                    <UniformGrid Columns="3" Rows="2">
+                        <!-- Accent -->
+                        <StackPanel Margin="0,0,12,16">
+                            <TextBlock Text="Accent" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                            <Border CornerRadius="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                    Padding="8,6" Cursor="Hand" MouseLeftButtonUp="AccentColor_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="24" Height="24" RadiusX="6" RadiusY="6">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding AccentColor}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center" Margin="8,0,0,0"
+                                               Text="{Binding AccentColor, Converter={StaticResource ColorToHexDisplay}}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Secondary -->
+                        <StackPanel Margin="0,0,12,16">
+                            <TextBlock Text="Secondary" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                            <Border CornerRadius="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                    Padding="8,6" Cursor="Hand" MouseLeftButtonUp="SecondaryColor_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="24" Height="24" RadiusX="6" RadiusY="6">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding SecondaryColor}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center" Margin="8,0,0,0"
+                                               Text="{Binding SecondaryColor, Converter={StaticResource ColorToHexDisplay}}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Success -->
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="Success" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                            <Border CornerRadius="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                    Padding="8,6" Cursor="Hand" MouseLeftButtonUp="SuccessColor_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="24" Height="24" RadiusX="6" RadiusY="6">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding SuccessColor}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center" Margin="8,0,0,0"
+                                               Text="{Binding SuccessColor, Converter={StaticResource ColorToHexDisplay}}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Warning -->
+                        <StackPanel Margin="0,0,12,0">
+                            <TextBlock Text="Warning" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                            <Border CornerRadius="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                    Padding="8,6" Cursor="Hand" MouseLeftButtonUp="WarningColor_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="24" Height="24" RadiusX="6" RadiusY="6">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding WarningColor}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center" Margin="8,0,0,0"
+                                               Text="{Binding WarningColor, Converter={StaticResource ColorToHexDisplay}}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Danger -->
+                        <StackPanel Margin="0,0,12,0">
+                            <TextBlock Text="Danger" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                            <Border CornerRadius="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                    Padding="8,6" Cursor="Hand" MouseLeftButtonUp="DangerColor_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="24" Height="24" RadiusX="6" RadiusY="6">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding DangerColor}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center" Margin="8,0,0,0"
+                                               Text="{Binding DangerColor, Converter={StaticResource ColorToHexDisplay}}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+
+                        <!-- Sidebar -->
+                        <StackPanel Margin="0,0,0,0">
+                            <TextBlock Text="Sidebar" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                            <Border CornerRadius="8" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                    Padding="8,6" Cursor="Hand" MouseLeftButtonUp="SidebarColor_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="24" Height="24" RadiusX="6" RadiusY="6">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding SidebarColor}" />
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                                               VerticalAlignment="Center" Margin="8,0,0,0"
+                                               Text="{Binding SidebarColor, Converter={StaticResource ColorToHexDisplay}}" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </UniformGrid>
+                </StackPanel>
+            </Border>
+
+            <!-- Color Picker Popup Overlay -->
+            <Popup x:Name="ColorPickerPopup" StaysOpen="False" Placement="Mouse"
+                   AllowsTransparency="True" PopupAnimation="Fade">
+                <Border CornerRadius="12" Padding="16" Background="{DynamicResource CardBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20" ShadowDepth="4" Opacity="0.15" Color="Black" />
+                    </Border.Effect>
+                    <StackPanel>
+                        <materialDesign:ColorPicker x:Name="ColorPicker" Width="260" Height="320" />
+                        <DockPanel Margin="0,12,0,0">
+                            <Button Content="Cancel" DockPanel.Dock="Right"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    Foreground="{DynamicResource TextSecondaryBrush}"
+                                    Click="ColorPickerCancel_Click" Margin="8,0,0,0" />
+                            <Button Content="Apply" DockPanel.Dock="Right"
+                                    Style="{StaticResource MaterialDesignFlatMidBgButton}"
+                                    Background="{DynamicResource AccentBrush}" Foreground="White"
+                                    Click="ColorPickerApply_Click" />
+                            <TextBlock />
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+            </Popup>
 
             <!-- ══════ About Section ══════ -->
             <TextBlock Text="About" Style="{StaticResource SectionTitle}" FontSize="17" />

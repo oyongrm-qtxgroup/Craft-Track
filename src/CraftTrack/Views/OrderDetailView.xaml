@@ -29,12 +29,12 @@
                 </Border>
 
                 <!-- Stock Warning -->
-                <Border Background="#FFF3E0" CornerRadius="8" Padding="14,10" Margin="0,0,0,16"
+                <Border Background="{DynamicResource WarningBannerBgBrush}" CornerRadius="8" Padding="14,10" Margin="0,0,0,16"
                         Visibility="{Binding StockWarningMessage, Converter={StaticResource BoolToVisibility}}">
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="AlertOutline" Foreground="#E65100" Width="18" Height="18"
+                        <materialDesign:PackIcon Kind="AlertOutline" Foreground="{DynamicResource WarningBannerFgBrush}" Width="18" Height="18"
                                                  VerticalAlignment="Top" Margin="0,2,8,0" />
-                        <TextBlock Text="{Binding StockWarningMessage}" Foreground="#E65100" FontSize="13"
+                        <TextBlock Text="{Binding StockWarningMessage}" Foreground="{DynamicResource WarningBannerFgBrush}" FontSize="13"
                                    VerticalAlignment="Center" TextWrapping="Wrap" />
                     </StackPanel>
                 </Border>
@@ -432,7 +432,7 @@
         </ScrollViewer>
 
         <!-- ══════ Product Picker Overlay ══════ -->
-        <Border Background="#80000000"
+        <Border Background="{DynamicResource OverlayBackdropBrush}"
                 Visibility="{Binding IsProductPickerOpen, Converter={StaticResource BoolToVisibility}}"
                 MouseLeftButtonDown="ProductPickerOverlay_Click">
             <Border Background="{DynamicResource CardBrush}" CornerRadius="16"
@@ -527,7 +527,7 @@
         </Border>
 
         <!-- ══════ Reject Item Overlay ══════ -->
-        <Border Background="#80000000"
+        <Border Background="{DynamicResource OverlayBackdropBrush}"
                 Visibility="{Binding IsRejectDialogOpen, Converter={StaticResource BoolToVisibility}}">
             <Border Background="{DynamicResource CardBrush}" CornerRadius="16"
                     MaxWidth="460" Margin="40" Padding="28"
@@ -600,7 +600,7 @@
         </Border>
 
         <!-- ══════ Add Payment Overlay ══════ -->
-        <Border Background="#80000000"
+        <Border Background="{DynamicResource OverlayBackdropBrush}"
                 Visibility="{Binding IsPaymentDialogOpen, Converter={StaticResource BoolToVisibility}}">
             <Border Background="{DynamicResource CardBrush}" CornerRadius="16"
                     MaxWidth="440" Margin="40" Padding="28"

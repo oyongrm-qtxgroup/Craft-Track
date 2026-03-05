@@ -217,7 +217,7 @@
         <Grid Grid.Row="0" Grid.RowSpan="3"
               Visibility="{Binding IsRejectDialogOpen, Converter={StaticResource BoolToVisibility}}">
             <!-- Backdrop -->
-            <Border Background="#80000000" />
+            <Border Background="{DynamicResource OverlayBackdropBrush}" />
 
             <!-- Dialog Card -->
             <Border Style="{StaticResource ModernCard}" Padding="28" MaxWidth="480"

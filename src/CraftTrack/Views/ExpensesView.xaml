@@ -64,7 +64,7 @@
                                 <TextBlock Text="TOTAL EXPENSES" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource ExpenseSubtitleBrush}" />
                                 <TextBlock Text="{Binding TotalExpenses, Converter={StaticResource CurrencyConverter}}"
-                                           FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="Sum of all expenses" FontSize="9"
                                            Foreground="{DynamicResource ExpenseSubtitleBrush}" Margin="0,2,0,0" />
                             </StackPanel>
@@ -76,7 +76,7 @@
                                 <TextBlock Text="EXPENSE COUNT" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource ProfitSubtitleBrush}" />
                                 <TextBlock Text="{Binding ExpenseCount}"
-                                           FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="Individual records" FontSize="9"
                                            Foreground="{DynamicResource ProfitSubtitleBrush}" Margin="0,2,0,0" />
                             </StackPanel>
@@ -88,7 +88,7 @@
                                 <TextBlock Text="AVERAGE" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource RevenueSubtitleBrush}" />
                                 <TextBlock Text="{Binding AverageExpense, Converter={StaticResource CurrencyConverter}}"
-                                           FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="Total ÷ Count" FontSize="9"
                                            Foreground="{DynamicResource RevenueSubtitleBrush}" Margin="0,2,0,0" />
                             </StackPanel>
@@ -100,7 +100,7 @@
                                 <TextBlock Text="LARGEST" FontSize="10" FontWeight="SemiBold"
                                            Foreground="{DynamicResource OutstandingSubtitleBrush}" />
                                 <TextBlock Text="{Binding LargestExpense, Converter={StaticResource CurrencyConverter}}"
-                                           FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,4,0,0" />
+                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource GradientCardTextBrush}" Margin="0,4,0,0" />
                                 <TextBlock Text="Highest single expense" FontSize="9"
                                            Foreground="{DynamicResource OutstandingSubtitleBrush}" Margin="0,2,0,0" />
                             </StackPanel>
@@ -207,7 +207,7 @@
 
         <!-- ══════ Expense Form Dialog Overlay ══════ -->
         <Grid Visibility="{Binding IsExpenseFormOpen, Converter={StaticResource BoolToVisibility}, FallbackValue=Collapsed}"
-              Panel.ZIndex="20" Background="#80000000">
+              Panel.ZIndex="20" Background="{DynamicResource OverlayBackdropBrush}">
             <Border Style="{StaticResource ModernCard}" Width="420" VerticalAlignment="Center" HorizontalAlignment="Center"
                     Padding="28,24">
                 <StackPanel>

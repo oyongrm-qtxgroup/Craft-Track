@@ -1,6 +1,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Windows;
+using CraftTrack.Helpers;
 using CraftTrack.Models;
 using MaterialDesignColors;
 using MaterialDesignThemes.Wpf;
@@ -20,13 +21,27 @@ public class ThemeService : IThemeService
 
     public ThemeMode CurrentMode { get; private set; } = ThemeMode.System;
     public bool IsDarkTheme { get; private set; }
+    public ColorScheme CurrentColorScheme { get; private set; } = ColorPresets.Purple.Clone();
 
     public event Action? ThemeChanged;
+    public event Action? ColorSchemeChanged;
+
+    private AppSettings _settings = new();
 
     public void Initialize()
     {
-        var settings = LoadSettings();
-        CurrentMode = settings.Theme;
+        _settings = LoadSettings();
+        CurrentMode = _settings.Theme;
+
+        // Restore color scheme from settings
+        if (_settings.CustomColorScheme is not null)
+        {
+            CurrentColorScheme = _settings.CustomColorScheme.Clone();
+        }
+        else
+        {
+            CurrentColorScheme = ColorPresets.GetByName(_settings.ColorPresetName).Clone();
+        }
 
         // Subscribe to system theme changes
         SystemEvents.UserPreferenceChanged += OnSystemPreferenceChanged;
@@ -37,9 +52,31 @@ public class ThemeService : IThemeService
     public void SetTheme(ThemeMode mode)
     {
         CurrentMode = mode;
+        _settings.Theme = mode;
         ApplyTheme(mode);
-        SaveSettings(new AppSettings { Theme = mode });
+        SaveSettings(_settings);
         ThemeChanged?.Invoke();
+    }
+
+    public void SetPreset(string presetName)
+    {
+        var preset = ColorPresets.GetByName(presetName);
+        CurrentColorScheme = preset.Clone();
+        _settings.ColorPresetName = preset.Name;
+        _settings.CustomColorScheme = null; // clear custom overrides
+        ApplyColorOverrides();
+        SaveSettings(_settings);
+        ColorSchemeChanged?.Invoke();
+    }
+
+    public void SetColorScheme(ColorScheme scheme)
+    {
+        CurrentColorScheme = scheme.Clone();
+        _settings.CustomColorScheme = scheme.Clone();
+        _settings.ColorPresetName = scheme.Name;
+        ApplyColorOverrides();
+        SaveSettings(_settings);
+        ColorSchemeChanged?.Invoke();
     }
 
     private void ApplyTheme(ThemeMode mode)
@@ -57,19 +94,39 @@ public class ThemeService : IThemeService
         // 1) Swap our custom color dictionary
         SwapColorDictionary(dark);
 
-        // 2) Update MaterialDesign base theme + primary/secondary colors
+        // 2) Update MaterialDesign base theme + primary/secondary from current scheme
         var paletteHelper = new PaletteHelper();
         var theme = paletteHelper.GetTheme();
 
         theme.SetBaseTheme(dark ? BaseTheme.Dark : BaseTheme.Light);
 
-        // Purple primary #7C3AED  /  Pink secondary #EC4899
-        var primary = System.Windows.Media.Color.FromRgb(0x7C, 0x3A, 0xED);
-        var secondary = System.Windows.Media.Color.FromRgb(0xEC, 0x48, 0x99);
+        // Use accent and secondary from current color scheme
+        var primary = ParseColorSafe(CurrentColorScheme.AccentColor, 0x7C, 0x3A, 0xED);
+        var secondary = ParseColorSafe(CurrentColorScheme.SecondaryColor, 0xEC, 0x48, 0x99);
         theme.SetPrimaryColor(primary);
         theme.SetSecondaryColor(secondary);
 
         paletteHelper.SetTheme(theme);
+
+        // 3) Apply color scheme overrides on top of the base dictionary
+        ApplyColorOverrides();
+    }
+
+    private void ApplyColorOverrides()
+    {
+        ColorDerivationHelper.ApplyColorScheme(CurrentColorScheme, IsDarkTheme);
+    }
+
+    private static System.Windows.Media.Color ParseColorSafe(string hex, byte r, byte g, byte b)
+    {
+        try
+        {
+            return (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(hex);
+        }
+        catch
+        {
+            return System.Windows.Media.Color.FromRgb(r, g, b);
+        }
     }
 
     private void SwapColorDictionary(bool dark)
