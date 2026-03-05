@@ -258,6 +258,34 @@ namespace CraftTrack.Data.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("CraftTrack.Models.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("PaidAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("PaidAt");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("CraftTrack.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -324,6 +352,50 @@ namespace CraftTrack.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("ProductMaterials");
+                });
+
+            modelBuilder.Entity("CraftTrack.Models.RejectRecord", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("EstimatedCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("InventoryItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RejectReason")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Date");
+
+                    b.HasIndex("InventoryItemId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.HasIndex("RejectReason");
+
+                    b.ToTable("RejectRecords");
                 });
 
             modelBuilder.Entity("CraftTrack.Models.StockAdjustment", b =>
@@ -411,6 +483,17 @@ namespace CraftTrack.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("CraftTrack.Models.Payment", b =>
+                {
+                    b.HasOne("CraftTrack.Models.Order", "Order")
+                        .WithMany("Payments")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
             modelBuilder.Entity("CraftTrack.Models.ProductMaterial", b =>
                 {
                     b.HasOne("CraftTrack.Models.InventoryItem", "InventoryItem")
@@ -428,6 +511,23 @@ namespace CraftTrack.Data.Migrations
                     b.Navigation("InventoryItem");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("CraftTrack.Models.RejectRecord", b =>
+                {
+                    b.HasOne("CraftTrack.Models.InventoryItem", "InventoryItem")
+                        .WithMany()
+                        .HasForeignKey("InventoryItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("CraftTrack.Models.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("InventoryItem");
+
+                    b.Navigation("OrderItem");
                 });
 
             modelBuilder.Entity("CraftTrack.Models.StockAdjustment", b =>
@@ -458,6 +558,8 @@ namespace CraftTrack.Data.Migrations
                     b.Navigation("Expenses");
 
                     b.Navigation("OrderItems");
+
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("CraftTrack.Models.Product", b =>

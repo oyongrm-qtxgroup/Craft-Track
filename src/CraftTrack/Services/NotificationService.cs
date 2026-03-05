@@ -139,6 +139,23 @@ public class NotificationService : INotificationService
         ShowToastNotification("⚠️ Low Stock Alert", notification.Message, $"inventory:{item.Id}");
     }
 
+    public async Task GenerateRejectNotificationAsync(RejectRecord rejectRecord, string itemName)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        var notification = new Notification
+        {
+            Type = NotificationType.RejectCreated,
+            Message = $"Rejected {rejectRecord.Quantity} × {itemName}: {rejectRecord.RejectReason}" +
+                      (string.IsNullOrWhiteSpace(rejectRecord.Notes) ? "" : $" — {rejectRecord.Notes}"),
+            RelatedInventoryItemId = rejectRecord.InventoryItemId,
+            CreatedAt = DateTime.Now
+        };
+        context.Notifications.Add(notification);
+        await context.SaveChangesAsync();
+
+        ShowToastNotification("🚫 Item Rejected", notification.Message);
+    }
+
     public void ShowToastNotification(string title, string message, string? arguments = null)
     {
         try

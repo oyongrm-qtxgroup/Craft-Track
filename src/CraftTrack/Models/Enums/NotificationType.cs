@@ -6,5 +6,6 @@ public enum NotificationType
     OrderDueIn1Day = 1,
     OrderOverdue = 2,
     RushOrderCreated = 3,
-    LowStock = 4
+    LowStock = 4,
+    RejectCreated = 5
 }

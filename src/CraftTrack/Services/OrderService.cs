@@ -93,6 +93,7 @@ public class OrderService : IOrderService
             .Include(o => o.OrderItems)
                 .ThenInclude(oi => oi.Product)
             .Include(o => o.Expenses)
+            .Include(o => o.Payments.OrderByDescending(p => p.PaidAt))
             .FirstOrDefaultAsync(o => o.Id == id);
     }
 
@@ -225,6 +226,74 @@ public class OrderService : IOrderService
 
         order.TotalPrice = order.OrderItems.Sum(i => i.Quantity * i.UnitPrice);
         await context.SaveChangesAsync();
+    }
+
+    // ── Payment History ──
+
+    public async Task<Payment> AddPaymentAsync(int orderId, decimal amount, string? notes = null)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        var order = await context.Orders.FindAsync(orderId);
+        if (order == null)
+            throw new InvalidOperationException($"Order {orderId} not found.");
+
+        var payment = new Payment
+        {
+            OrderId = orderId,
+            Amount = amount,
+            PaidAt = DateTime.Now,
+            Notes = notes
+        };
+        context.Payments.Add(payment);
+
+        // Update running total
+        order.AmountPaid += amount;
+
+        // Auto-update payment type
+        if (order.AmountPaid >= order.TotalPrice && order.TotalPrice > 0)
+            order.PaymentType = PaymentType.FullPayment;
+        else if (order.AmountPaid > 0)
+            order.PaymentType = PaymentType.Downpayment;
+        else
+            order.PaymentType = PaymentType.Unpaid;
+
+        await context.SaveChangesAsync();
+        return payment;
+    }
+
+    public async Task<List<Payment>> GetPaymentsForOrderAsync(int orderId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        return await context.Payments
+            .Where(p => p.OrderId == orderId)
+            .OrderByDescending(p => p.PaidAt)
+            .ToListAsync();
+    }
+
+    public async Task<bool> DeletePaymentAsync(int paymentId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        var payment = await context.Payments
+            .Include(p => p.Order)
+            .FirstOrDefaultAsync(p => p.Id == paymentId);
+
+        if (payment == null) return false;
+
+        var order = payment.Order;
+        order.AmountPaid -= payment.Amount;
+        if (order.AmountPaid < 0) order.AmountPaid = 0;
+
+        // Auto-update payment type
+        if (order.AmountPaid >= order.TotalPrice && order.TotalPrice > 0)
+            order.PaymentType = PaymentType.FullPayment;
+        else if (order.AmountPaid > 0)
+            order.PaymentType = PaymentType.Downpayment;
+        else
+            order.PaymentType = PaymentType.Unpaid;
+
+        context.Payments.Remove(payment);
+        await context.SaveChangesAsync();
+        return true;
     }
 
     // Dashboard queries

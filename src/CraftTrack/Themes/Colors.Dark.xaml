@@ -164,4 +164,34 @@
     <SolidColorBrush x:Key="OverlayWhiteBrush"     Color="#FFFFFF33" />
     <SolidColorBrush x:Key="OverlayTextBrush"      Color="#FFFFFFCC" />
 
+    <!-- Chart Palette (for ScottPlot / report charts) -->
+    <Color x:Key="Chart1Color">#A78BFA</Color>
+    <Color x:Key="Chart2Color">#F472B6</Color>
+    <Color x:Key="Chart3Color">#34D399</Color>
+    <Color x:Key="Chart4Color">#FBBF24</Color>
+    <Color x:Key="Chart5Color">#60A5FA</Color>
+    <Color x:Key="Chart6Color">#F87171</Color>
+    <SolidColorBrush x:Key="ChartGridBrush"        Color="#334155" />
+    <SolidColorBrush x:Key="ChartTextBrush"        Color="#94A3B8" />
+    <SolidColorBrush x:Key="ChartBgBrush"          Color="#1E293B" />
+
+    <!-- Reject -->
+    <SolidColorBrush x:Key="RejectBadgeBrush"      Color="#F87171" />
+    <SolidColorBrush x:Key="RejectBgBrush"         Color="#450A0A" />
+    <SolidColorBrush x:Key="RejectTextBrush"       Color="#FCA5A5" />
+    <LinearGradientBrush x:Key="RejectGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#DC2626" Offset="0" />
+        <GradientStop Color="#B91C1C" Offset="1" />
+    </LinearGradientBrush>
+
+    <!-- Profit Positive / Negative -->
+    <SolidColorBrush x:Key="ProfitPositiveBrush"   Color="#34D399" />
+    <SolidColorBrush x:Key="ProfitNegativeBrush"   Color="#F87171" />
+
+    <!-- Tab pill -->
+    <SolidColorBrush x:Key="TabActiveBgBrush"      Color="#A78BFA" />
+    <SolidColorBrush x:Key="TabActiveFgBrush"      Color="#0F172A" />
+    <SolidColorBrush x:Key="TabInactiveBgBrush"    Color="#1E293B" />
+    <SolidColorBrush x:Key="TabInactiveFgBrush"    Color="#94A3B8" />
+
 </ResourceDictionary>

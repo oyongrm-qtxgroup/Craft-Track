@@ -12,5 +12,6 @@ public interface INotificationService
     Task GenerateDeadlineNotificationsAsync();
     Task GenerateRushOrderNotificationAsync(Order order);
     Task GenerateLowStockNotificationAsync(InventoryItem item);
+    Task GenerateRejectNotificationAsync(RejectRecord rejectRecord, string itemName);
     void ShowToastNotification(string title, string message, string? arguments = null);
 }

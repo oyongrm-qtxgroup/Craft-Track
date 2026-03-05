@@ -48,4 +48,5 @@ public class Order
     public Customer Customer { get; set; } = null!;
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
     public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
+    public ICollection<Payment> Payments { get; set; } = new List<Payment>();
 }

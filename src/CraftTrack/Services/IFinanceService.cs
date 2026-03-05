@@ -21,4 +21,12 @@ public interface IFinanceService
     Task<Dictionary<ExpenseCategory, decimal>> GetExpensesByCategoryAsync(DateTime? dateFrom = null, DateTime? dateTo = null);
     Task<decimal> GetNetProfitAsync(DateTime? dateFrom = null, DateTime? dateTo = null);
     Task<decimal> GetTotalOutstandingBalanceAsync();
+
+    // Sales Report
+    Task<List<MonthlySalesData>> GetMonthlySalesDataAsync(int monthsBack = 6);
+    Task<List<MonthlySalesData>> GetSalesDataAsync(TimeGranularity granularity, DateTime? dateFrom = null, DateTime? dateTo = null);
+    Task<List<TopProductData>> GetTopSellingProductsAsync(DateTime? from = null, DateTime? to = null, int count = 10);
+    Task<List<CustomerRevenueData>> GetRevenueByCustomerAsync(DateTime? from = null, DateTime? to = null, int count = 10);
+    Task<Dictionary<OrderStatus, int>> GetOrderStatusBreakdownAsync(DateTime? from = null, DateTime? to = null);
+    Task<int> GetTotalOrderCountAsync(DateTime? from = null, DateTime? to = null);
 }

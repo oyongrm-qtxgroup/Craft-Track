@@ -73,6 +73,7 @@ public partial class App : Application
         services.AddSingleton<IProductService, ProductService>();
         services.AddSingleton<IOrderService, OrderService>();
         services.AddSingleton<IFinanceService, FinanceService>();
+        services.AddSingleton<IRejectService, RejectService>();
         services.AddSingleton<IThemeService, ThemeService>();
 
         // ViewModels
@@ -88,6 +89,8 @@ public partial class App : Application
         services.AddTransient<ProductDetailViewModel>();
         services.AddTransient<NotificationCenterViewModel>();
         services.AddTransient<SettingsViewModel>();
+        services.AddTransient<ExpensesViewModel>();
+        services.AddTransient<RejectListViewModel>();
 
         // Windows
         services.AddSingleton<MainWindow>();

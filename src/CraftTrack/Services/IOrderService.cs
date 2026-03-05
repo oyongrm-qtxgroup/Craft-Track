@@ -24,6 +24,11 @@ public interface IOrderService
     Task<Order> UpdatePaymentAsync(int orderId, decimal amountPaid, PaymentType paymentType);
     Task RecalculateOrderTotalAsync(int orderId);
 
+    // Payment history
+    Task<Payment> AddPaymentAsync(int orderId, decimal amount, string? notes = null);
+    Task<List<Payment>> GetPaymentsForOrderAsync(int orderId);
+    Task<bool> DeletePaymentAsync(int paymentId);
+
     // Dashboard queries
     Task<int> GetActiveOrderCountAsync();
     Task<int> GetRushHighPriorityCountAsync();

@@ -11,6 +11,7 @@ public partial class InventoryDetailViewModel : ObservableObject
 {
     private readonly IInventoryService _inventoryService;
     private readonly INotificationService _notificationService;
+    private readonly IRejectService _rejectService;
     private readonly MainViewModel _mainViewModel;
 
     [ObservableProperty] private int _itemId;
@@ -30,13 +31,23 @@ public partial class InventoryDetailViewModel : ObservableObject
     [ObservableProperty] private string _adjustmentNote = string.Empty;
     [ObservableProperty] private ObservableCollection<StockAdjustment> _adjustmentHistory = [];
 
+    // Reject dialog
+    [ObservableProperty] private bool _isRejectDialogOpen;
+    [ObservableProperty] private decimal _rejectQuantity;
+    [ObservableProperty] private RejectReason _rejectReason = RejectReason.MaterialDefect;
+    [ObservableProperty] private string _rejectNotes = string.Empty;
+    [ObservableProperty] private string _rejectErrorMessage = string.Empty;
+    [ObservableProperty] private ObservableCollection<RejectRecord> _rejectHistory = [];
+
     public InventoryDetailViewModel(
         IInventoryService inventoryService,
         INotificationService notificationService,
+        IRejectService rejectService,
         MainViewModel mainViewModel)
     {
         _inventoryService = inventoryService;
         _notificationService = notificationService;
+        _rejectService = rejectService;
         _mainViewModel = mainViewModel;
     }
 
@@ -69,6 +80,10 @@ public partial class InventoryDetailViewModel : ObservableObject
         UnitCost = item.UnitCost;
         Notes = item.Notes ?? string.Empty;
         AdjustmentHistory = new ObservableCollection<StockAdjustment>(item.StockAdjustments);
+
+        // Load reject history for this item
+        var rejects = await _rejectService.GetRejectRecordsByInventoryItemAsync(itemId);
+        RejectHistory = new ObservableCollection<RejectRecord>(rejects);
     }
 
     [RelayCommand]
@@ -151,5 +166,62 @@ public partial class InventoryDetailViewModel : ObservableObject
     private void Cancel()
     {
         _mainViewModel.NavigateTo("Inventory");
+    }
+
+    // ── Reject from inventory ──
+
+    [RelayCommand]
+    private void OpenRejectDialog()
+    {
+        RejectQuantity = 0;
+        RejectReason = RejectReason.MaterialDefect;
+        RejectNotes = string.Empty;
+        RejectErrorMessage = string.Empty;
+        IsRejectDialogOpen = true;
+    }
+
+    [RelayCommand]
+    private void CloseRejectDialog()
+    {
+        IsRejectDialogOpen = false;
+    }
+
+    [RelayCommand]
+    private async Task SubmitReject()
+    {
+        RejectErrorMessage = string.Empty;
+
+        if (RejectQuantity <= 0)
+        {
+            RejectErrorMessage = "Quantity must be greater than zero.";
+            return;
+        }
+
+        if (RejectQuantity > Quantity)
+        {
+            RejectErrorMessage = $"Cannot reject more than available stock ({Quantity:N2}).";
+            return;
+        }
+
+        try
+        {
+            var record = await _rejectService.RejectInventoryItemAsync(
+                ItemId, RejectQuantity, RejectReason,
+                string.IsNullOrWhiteSpace(RejectNotes) ? null : RejectNotes.Trim());
+
+            await _notificationService.GenerateRejectNotificationAsync(record, Name);
+            await _mainViewModel.RefreshNotificationBadgeAsync();
+
+            // Refresh local state
+            Quantity -= RejectQuantity;
+            IsRejectDialogOpen = false;
+
+            var rejects = await _rejectService.GetRejectRecordsByInventoryItemAsync(ItemId);
+            RejectHistory = new ObservableCollection<RejectRecord>(rejects);
+        }
+        catch (Exception ex)
+        {
+            RejectErrorMessage = ex.Message;
+        }
     }
 }

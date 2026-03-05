@@ -96,6 +96,24 @@
                                                VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
                                 </StackPanel>
                             </ListBoxItem>
+
+                            <ListBoxItem Style="{StaticResource NavItem}" MouseLeftButtonUp="NavExpenses_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="CashMultiple" Width="20" Height="20"
+                                                             Foreground="{DynamicResource SidebarIconBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Expenses" Foreground="White" FontSize="13.5"
+                                               VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
+                                </StackPanel>
+                            </ListBoxItem>
+
+                            <ListBoxItem Style="{StaticResource NavItem}" MouseLeftButtonUp="NavRejects_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="AlertOctagonOutline" Width="20" Height="20"
+                                                             Foreground="{DynamicResource SidebarIconBrush}" VerticalAlignment="Center" />
+                                    <TextBlock Text="Rejects" Foreground="White" FontSize="13.5"
+                                               VerticalAlignment="Center" Margin="14,0,0,0" FontWeight="Medium" />
+                                </StackPanel>
+                            </ListBoxItem>
                         </ListBox>
 
                         <!-- Section: System -->

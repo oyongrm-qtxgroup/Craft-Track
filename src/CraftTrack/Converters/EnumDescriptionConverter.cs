@@ -31,6 +31,14 @@ public class EnumDescriptionConverter : IValueConverter
                 ExpenseCategory.Packaging => "Packaging",
                 ExpenseCategory.Utilities => "Utilities",
                 ExpenseCategory.Other => "Other",
+                RejectReason.WrongPrinting => "Wrong Printing",
+                RejectReason.IncorrectDesign => "Incorrect Design",
+                RejectReason.MaterialDefect => "Material Defect",
+                RejectReason.MachineMalfunction => "Machine Malfunction",
+                RejectReason.CustomerReturn => "Customer Return",
+                RejectReason.QualityControl => "Quality Control",
+                RejectReason.Other => "Other (Reject)",
+                NotificationType.RejectCreated => "Item Rejected",
                 _ => enumValue.ToString()
             };
         }

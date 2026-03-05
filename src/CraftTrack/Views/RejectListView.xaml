@@ -1,0 +1,299 @@
+<UserControl x:Class="CraftTrack.Views.RejectListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:converters="clr-namespace:CraftTrack.Converters"
+             xmlns:enums="clr-namespace:CraftTrack.Models.Enums">
+
+    <UserControl.Resources>
+        <converters:CurrencyFormatConverter x:Key="CurrencyLocal" />
+        <converters:EnumDescriptionConverter x:Key="EnumDescLocal" />
+    </UserControl.Resources>
+
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard Storyboard="{StaticResource FadeSlideIn}" />
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- ══════ KPI Cards ══════ -->
+        <UniformGrid Grid.Row="0" Rows="1" Margin="0,0,0,20">
+            <!-- Total Rejects -->
+            <Border Style="{StaticResource ModernCard}" Padding="20" Margin="0,0,10,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Border Background="{DynamicResource RejectBgBrush}" CornerRadius="8" Width="36" Height="36">
+                            <materialDesign:PackIcon Kind="AlertOctagonOutline" Width="18" Height="18" 
+                                                     Foreground="{DynamicResource RejectTextBrush}"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="Total Rejects" FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
+                                   VerticalAlignment="Center" Margin="12,0,0,0" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding TotalRejectCount}" FontSize="28" FontWeight="Bold"
+                               Foreground="{DynamicResource TextPrimaryBrush}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Total Rejection Cost -->
+            <Border Style="{StaticResource ModernCard}" Padding="20" Margin="10,0,10,0">
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                        <Border Background="{DynamicResource DangerBgBrush}" CornerRadius="8" Width="36" Height="36">
+                            <materialDesign:PackIcon Kind="CurrencyPhp" Width="18" Height="18"
+                                                     Foreground="{DynamicResource DangerTextBrush}"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <TextBlock Text="Rejection Losses" FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
+                                   VerticalAlignment="Center" Margin="12,0,0,0" />
+                    </StackPanel>
+                    <TextBlock Text="{Binding TotalRejectionCost, Converter={StaticResource CurrencyLocal}}"
+                               FontSize="28" FontWeight="Bold" Foreground="{DynamicResource DangerBrush}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Quick Action -->
+            <Border Style="{StaticResource ModernCard}" Padding="20" Margin="10,0,0,0">
+                <StackPanel VerticalAlignment="Center">
+                    <TextBlock Text="Quick Action" FontSize="13" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,10" />
+                    <Button Style="{StaticResource ModernPrimaryButton}" Command="{Binding OpenRejectDialogCommand}"
+                            Padding="16,10" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="AlertPlusOutline" Width="17" Height="17" VerticalAlignment="Center" Margin="0,0,8,0" />
+                            <TextBlock Text="Reject Inventory Item" FontSize="13" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+        </UniformGrid>
+
+        <!-- ══════ Filters ══════ -->
+        <Border Grid.Row="1" Style="{StaticResource ModernCard}" Padding="16" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="160" />
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="140" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}"
+                         materialDesign:HintAssist.Hint="Search item name, notes..."
+                         Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                         Margin="0,0,10,0" VerticalAlignment="Center" />
+
+                <ComboBox Grid.Column="1" SelectedValue="{Binding FilterReason}" SelectedValuePath="Tag"
+                          materialDesign:HintAssist.Hint="Reason"
+                          Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                          Margin="0,0,10,0" VerticalAlignment="Center">
+                    <ComboBoxItem Content="All Reasons" Tag="{x:Null}" />
+                    <ComboBoxItem Content="Wrong Printing" Tag="{x:Static enums:RejectReason.WrongPrinting}" />
+                    <ComboBoxItem Content="Incorrect Design" Tag="{x:Static enums:RejectReason.IncorrectDesign}" />
+                    <ComboBoxItem Content="Material Defect" Tag="{x:Static enums:RejectReason.MaterialDefect}" />
+                    <ComboBoxItem Content="Machine Malfunction" Tag="{x:Static enums:RejectReason.MachineMalfunction}" />
+                    <ComboBoxItem Content="Customer Return" Tag="{x:Static enums:RejectReason.CustomerReturn}" />
+                    <ComboBoxItem Content="Quality Control" Tag="{x:Static enums:RejectReason.QualityControl}" />
+                    <ComboBoxItem Content="Other" Tag="{x:Static enums:RejectReason.Other}" />
+                </ComboBox>
+
+                <DatePicker Grid.Column="2" SelectedDate="{Binding FilterFrom}"
+                            materialDesign:HintAssist.Hint="From"
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                            Margin="0,0,10,0" VerticalAlignment="Center" />
+
+                <DatePicker Grid.Column="3" SelectedDate="{Binding FilterTo}"
+                            materialDesign:HintAssist.Hint="To"
+                            Style="{StaticResource MaterialDesignOutlinedDatePicker}"
+                            Margin="0,0,10,0" VerticalAlignment="Center" />
+
+                <Button Grid.Column="4" Style="{StaticResource ModernPrimaryButton}"
+                        Command="{Binding ApplyFiltersCommand}" Padding="14,8" Margin="0,0,6,0"
+                        VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="FilterOutline" Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,4,0" />
+                        <TextBlock Text="Filter" FontSize="12.5" />
+                    </StackPanel>
+                </Button>
+
+                <Button Grid.Column="5" Style="{StaticResource ModernOutlinedButton}"
+                        Command="{Binding ClearFiltersCommand}" Padding="14,8"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="Clear" FontSize="12.5" />
+                </Button>
+            </Grid>
+        </Border>
+
+        <!-- ══════ Reject Records Table ══════ -->
+        <Border Grid.Row="2" Style="{StaticResource ModernCard}" Padding="0">
+            <Grid>
+                <!-- Empty state -->
+                <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"
+                            Visibility="{Binding RejectRecords.Count, Converter={StaticResource InverseBoolToVisibility}}">
+                    <materialDesign:PackIcon Kind="CheckCircleOutline" Width="48" Height="48"
+                                             Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Center" Margin="0,0,0,12" />
+                    <TextBlock Text="No reject records found." FontSize="14" Foreground="{DynamicResource TextMutedBrush}"
+                               HorizontalAlignment="Center" />
+                    <TextBlock Text="Reject records will appear here when items are rejected from orders or inventory."
+                               FontSize="12" Foreground="{DynamicResource TextMutedBrush}"
+                               HorizontalAlignment="Center" Margin="0,6,0,0" />
+                </StackPanel>
+
+                <!-- DataGrid -->
+                <DataGrid ItemsSource="{Binding RejectRecords}"
+                          Style="{StaticResource ModernDataGrid}"
+                          ColumnHeaderStyle="{StaticResource ModernColumnHeader}"
+                          CellStyle="{StaticResource ModernDataGridCell}"
+                          RowStyle="{StaticResource ModernDataGridRow}"
+                          Visibility="{Binding RejectRecords.Count, Converter={StaticResource BoolToVisibility}}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Date" Binding="{Binding Date, StringFormat=d}" Width="100" />
+                        <DataGridTemplateColumn Header="Source" Width="140">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border CornerRadius="4" Padding="6,2" Margin="0,2"
+                                                Background="{DynamicResource RejectBgBrush}">
+                                            <TextBlock FontSize="11" FontWeight="Medium"
+                                                       Foreground="{DynamicResource RejectTextBrush}">
+                                                <TextBlock.Text>
+                                                    <MultiBinding StringFormat="{}{0}">
+                                                        <Binding Path="OrderItemId" FallbackValue="" />
+                                                    </MultiBinding>
+                                                </TextBlock.Text>
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="Inventory" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding OrderItemId}" Value="{x:Null}">
+                                                                <Setter Property="Text" Value="Inventory" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Border>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="Item" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock VerticalAlignment="Center" FontWeight="Medium"
+                                               Foreground="{DynamicResource TextPrimaryBrush}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Text" Value="{Binding InventoryItem.Name}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding InventoryItem}" Value="{x:Null}">
+                                                        <Setter Property="Text" Value="{Binding OrderItem.Product.Name}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="Reason" Binding="{Binding RejectReason, Converter={StaticResource EnumDescLocal}}" Width="140" />
+                        <DataGridTextColumn Header="Qty" Binding="{Binding Quantity, StringFormat=N2}" Width="70" />
+                        <DataGridTextColumn Header="Est. Cost" Binding="{Binding EstimatedCost, Converter={StaticResource CurrencyLocal}}" Width="110" />
+                        <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="180" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+
+        <!-- ══════ Reject Inventory Dialog Overlay ══════ -->
+        <Grid Grid.Row="0" Grid.RowSpan="3"
+              Visibility="{Binding IsRejectDialogOpen, Converter={StaticResource BoolToVisibility}}">
+            <!-- Backdrop -->
+            <Border Background="#80000000" />
+
+            <!-- Dialog Card -->
+            <Border Style="{StaticResource ModernCard}" Padding="28" MaxWidth="480"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Margin="40">
+                <StackPanel>
+                    <TextBlock Text="Reject Inventory Item" FontSize="18" FontWeight="Bold"
+                               Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,20" />
+
+                    <!-- Error -->
+                    <Border Background="{DynamicResource DangerBgBrush}" CornerRadius="8" Padding="12,8" Margin="0,0,0,14"
+                            Visibility="{Binding DialogErrorMessage, Converter={StaticResource BoolToVisibility}}">
+                        <TextBlock Text="{Binding DialogErrorMessage}" Foreground="{DynamicResource DangerTextBrush}" FontSize="12.5" TextWrapping="Wrap" />
+                    </Border>
+
+                    <!-- Inventory Item -->
+                    <ComboBox ItemsSource="{Binding InventoryItems}"
+                              SelectedItem="{Binding SelectedInventoryItem}"
+                              DisplayMemberPath="Name"
+                              materialDesign:HintAssist.Hint="Select Inventory Item *"
+                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              Margin="0,0,0,14" />
+
+                    <!-- Available stock display -->
+                    <TextBlock FontSize="12" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,14"
+                               Visibility="{Binding SelectedInventoryItem, Converter={StaticResource BoolToVisibility}}">
+                        <Run Text="Available stock: " />
+                        <Run Text="{Binding SelectedInventoryItem.Quantity, StringFormat=N2, Mode=OneWay}" FontWeight="SemiBold" />
+                        <Run Text=" " />
+                        <Run Text="{Binding SelectedInventoryItem.UnitOfMeasure, Mode=OneWay}" />
+                    </TextBlock>
+
+                    <!-- Quantity -->
+                    <TextBox Text="{Binding RejectQuantity, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Reject Quantity *"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             Margin="0,0,0,14" />
+
+                    <!-- Reason -->
+                    <ComboBox SelectedValue="{Binding RejectReason}" SelectedValuePath="Tag"
+                              materialDesign:HintAssist.Hint="Reject Reason *"
+                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              Margin="0,0,0,14">
+                        <ComboBoxItem Content="Wrong Printing" Tag="{x:Static enums:RejectReason.WrongPrinting}" />
+                        <ComboBoxItem Content="Incorrect Design" Tag="{x:Static enums:RejectReason.IncorrectDesign}" />
+                        <ComboBoxItem Content="Material Defect" Tag="{x:Static enums:RejectReason.MaterialDefect}" />
+                        <ComboBoxItem Content="Machine Malfunction" Tag="{x:Static enums:RejectReason.MachineMalfunction}" />
+                        <ComboBoxItem Content="Customer Return" Tag="{x:Static enums:RejectReason.CustomerReturn}" />
+                        <ComboBoxItem Content="Quality Control" Tag="{x:Static enums:RejectReason.QualityControl}" />
+                        <ComboBoxItem Content="Other" Tag="{x:Static enums:RejectReason.Other}" />
+                    </ComboBox>
+
+                    <!-- Notes -->
+                    <TextBox Text="{Binding RejectNotes, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Notes (optional)"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60"
+                             Margin="0,0,0,20" />
+
+                    <!-- Buttons -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource ModernOutlinedButton}"
+                                Command="{Binding CloseRejectDialogCommand}" Padding="16,8" Margin="0,0,10,0">
+                            <TextBlock Text="Cancel" />
+                        </Button>
+                        <Button Style="{StaticResource ModernPrimaryButton}"
+                                Command="{Binding SubmitRejectCommand}" Padding="16,8"
+                                Background="{DynamicResource DangerBrush}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AlertOctagonOutline" Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                <TextBlock Text="Reject Item" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

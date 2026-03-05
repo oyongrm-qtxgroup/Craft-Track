@@ -57,6 +57,8 @@ public partial class MainViewModel : ObservableObject
             "Customers" => GetViewModel<CustomerListViewModel>(),
             "Inventory" => GetViewModel<InventoryListViewModel>(),
             "Products" => GetViewModel<ProductListViewModel>(),
+            "Expenses" => GetViewModel<ExpensesViewModel>(),
+            "Rejects" => GetViewModel<RejectListViewModel>(),
             "Notifications" => GetViewModel<NotificationCenterViewModel>(),
             "Settings" => GetViewModel<SettingsViewModel>(),
             _ => GetViewModel<DashboardViewModel>()
@@ -69,6 +71,8 @@ public partial class MainViewModel : ObservableObject
             "Customers" => "Customers",
             "Inventory" => "Inventory",
             "Products" => "Products",
+            "Expenses" => "Expenses",
+            "Rejects" => "Reject Records",
             "Notifications" => "Notifications",
             "Settings" => "Settings",
             _ => "Dashboard"

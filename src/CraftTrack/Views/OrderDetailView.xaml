@@ -150,6 +150,7 @@
                                                 <ColumnDefinition Width="110" />
                                                 <ColumnDefinition Width="100" />
                                                 <ColumnDefinition Width="36" />
+                                                <ColumnDefinition Width="36" />
                                             </Grid.ColumnDefinitions>
 
                                             <!-- Product thumbnail -->
@@ -192,6 +193,20 @@
                                                     Command="{Binding DataContext.RemoveOrderItemCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                     CommandParameter="{Binding}" Width="28" Height="28">
                                                 <materialDesign:PackIcon Kind="Close" Width="14" Height="14" />
+                                            </Button>
+
+                                            <!-- Reject -->
+                                            <Button Grid.Column="6" Width="28" Height="28"
+                                                    ToolTip="Reject this item"
+                                                    Command="{Binding DataContext.OpenRejectDialogCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Visibility="{Binding DataContext.IsNewOrder, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource InverseBoolToVisibility}}">
+                                                <Button.Style>
+                                                    <Style TargetType="Button" BasedOn="{StaticResource ModernIconButton}">
+                                                        <Setter Property="Foreground" Value="{DynamicResource RejectTextBrush}" />
+                                                    </Style>
+                                                </Button.Style>
+                                                <materialDesign:PackIcon Kind="AlertOctagonOutline" Width="14" Height="14" />
                                             </Button>
                                         </Grid>
                                     </Border>
@@ -242,10 +257,68 @@
 
                 <!-- ══════ Payment Section ══════ -->
                 <TextBlock Text="Payment" Style="{StaticResource SectionTitle}" />
-                <Border Style="{StaticResource ModernCard}" Padding="24" Margin="0,0,0,20">
+
+                <!-- ── Payment summary cards ── -->
+                <Border Style="{StaticResource ModernCard}" Padding="24" Margin="0,0,0,12">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Payment Status -->
+                        <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" CornerRadius="10" Padding="16,10" Margin="0,0,8,0"
+                                VerticalAlignment="Center">
+                            <StackPanel>
+                                <TextBlock Text="Status" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" FontWeight="Medium" />
+                                <TextBlock Text="{Binding PaymentType, Converter={StaticResource EnumDescriptionConverter}}"
+                                           FontSize="15" FontWeight="Bold" Foreground="{DynamicResource PrimaryBrush}" Margin="0,2,0,0" />
+                                <TextBlock Text="Auto-set by payments" FontSize="9" Foreground="{DynamicResource TextMutedBrush}" Margin="0,3,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Amount Paid -->
+                        <Border Grid.Column="1" Background="{DynamicResource SuccessBgBrush}" CornerRadius="10" Padding="16,10" Margin="8,0,8,0"
+                                VerticalAlignment="Center">
+                            <StackPanel>
+                                <TextBlock Text="Total Paid" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" FontWeight="Medium" />
+                                <TextBlock Text="{Binding AmountPaid, Converter={StaticResource CurrencyConverter}}"
+                                           FontSize="18" FontWeight="Bold" Foreground="{DynamicResource SuccessTextBrush}" Margin="0,2,0,0" />
+                                <TextBlock Text="Sum of all payments" FontSize="9" Foreground="{DynamicResource TextMutedBrush}" Margin="0,3,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Balance Due -->
+                        <Border Grid.Column="2" Background="{DynamicResource DangerBgBrush}" CornerRadius="10" Padding="16,10" Margin="8,0,8,0"
+                                VerticalAlignment="Center">
+                            <StackPanel>
+                                <TextBlock Text="Balance Due" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" FontWeight="Medium" />
+                                <TextBlock Text="{Binding BalanceDue, Converter={StaticResource CurrencyConverter}}"
+                                           FontSize="18" FontWeight="Bold" Foreground="{DynamicResource DangerTextBrush}" Margin="0,2,0,0" />
+                                <TextBlock Text="Order Total − Paid" FontSize="9" Foreground="{DynamicResource TextMutedBrush}" Margin="0,3,0,0" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Add Payment button (existing orders only) -->
+                        <Button Grid.Column="3" Style="{StaticResource ModernPrimaryButton}"
+                                Command="{Binding OpenPaymentDialogCommand}"
+                                Padding="14,8" Margin="8,0,0,0" VerticalAlignment="Center"
+                                Visibility="{Binding IsNewOrder, Converter={StaticResource InverseBoolToVisibility}}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CashPlus" Width="17" Height="17" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                <TextBlock Text="Add Payment" FontSize="13" />
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- ── New order: manual payment entry (before first save) ── -->
+                <Border Style="{StaticResource ModernCard}" Padding="24" Margin="0,0,0,12"
+                        Visibility="{Binding IsNewOrder, Converter={StaticResource BoolToVisibility}}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
@@ -263,17 +336,73 @@
                         <TextBox Grid.Column="1" Text="{Binding AmountPaid, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
                                  materialDesign:HintAssist.Hint="Amount Paid (₱)"
                                  Style="{StaticResource MaterialDesignOutlinedTextBox}"
-                                 Margin="8,0,8,0" />
+                                 Margin="8,0,0,0" />
+                    </Grid>
+                </Border>
 
-                        <Border Grid.Column="2" Background="{DynamicResource DangerBgBrush}" CornerRadius="10" Padding="16,10" Margin="8,0,0,0"
-                                VerticalAlignment="Center">
-                            <StackPanel>
-                                <TextBlock Text="Balance Due" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" FontWeight="Medium" />
-                                <TextBlock Text="{Binding BalanceDue, Converter={StaticResource CurrencyConverter}}"
-                                           FontSize="22" FontWeight="Bold" Foreground="{DynamicResource DangerTextBrush}" Margin="0,2,0,0" />
+                <!-- ── Payment History table (existing orders only) ── -->
+                <Border Style="{StaticResource ModernCard}" Padding="20" Margin="0,0,0,20"
+                        Visibility="{Binding IsNewOrder, Converter={StaticResource InverseBoolToVisibility}}">
+                    <StackPanel>
+                        <TextBlock Text="Payment History" FontSize="14" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,12" />
+
+                        <!-- No payments placeholder -->
+                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="8" Padding="20"
+                                Visibility="{Binding PaymentHistory.Count, Converter={StaticResource InverseBoolToVisibility}}"
+                                Margin="0,0,0,4">
+                            <StackPanel HorizontalAlignment="Center">
+                                <materialDesign:PackIcon Kind="CashRemove" Width="32" Height="32"
+                                                         Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Center" />
+                                <TextBlock Text="No payments recorded yet" FontSize="13"
+                                           Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Center" Margin="0,6,0,0" />
                             </StackPanel>
                         </Border>
-                    </Grid>
+
+                        <!-- Payment history DataGrid -->
+                        <DataGrid ItemsSource="{Binding PaymentHistory}" AutoGenerateColumns="False"
+                                  IsReadOnly="True" CanUserAddRows="False" CanUserDeleteRows="False"
+                                  CanUserResizeColumns="True" CanUserSortColumns="True"
+                                  HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                                  Background="Transparent" BorderThickness="0"
+                                  RowBackground="Transparent"
+                                  AlternatingRowBackground="{DynamicResource SurfaceBrush}"
+                                  Foreground="{DynamicResource TextPrimaryBrush}"
+                                  materialDesign:DataGridAssist.CellPadding="12 8"
+                                  Visibility="{Binding PaymentHistory.Count, Converter={StaticResource BoolToVisibility}}"
+                                  MaxHeight="260">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Date" Width="160"
+                                                    Binding="{Binding PaidAt, StringFormat={}{0:MMM dd, yyyy  hh:mm tt}}" />
+                                <DataGridTextColumn Header="Amount" Width="130">
+                                    <DataGridTextColumn.Binding>
+                                        <Binding Path="Amount" Converter="{StaticResource CurrencyConverter}" />
+                                    </DataGridTextColumn.Binding>
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="FontWeight" Value="SemiBold" />
+                                            <Setter Property="Foreground" Value="{DynamicResource SuccessTextBrush}" />
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTextColumn Header="Notes" Width="*"
+                                                    Binding="{Binding Notes}" />
+                                <DataGridTemplateColumn Header="" Width="50">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Style="{StaticResource ModernIconButton}"
+                                                    Command="{Binding DataContext.DeletePaymentCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"
+                                                    ToolTip="Delete payment" Width="28" Height="28">
+                                                <materialDesign:PackIcon Kind="DeleteOutline" Width="15" Height="15"
+                                                                         Foreground="{DynamicResource DangerBrush}" />
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
                 </Border>
 
                 <!-- ══════ Notes ══════ -->
@@ -394,6 +523,136 @@
                         </ItemsControl>
                     </ScrollViewer>
                 </DockPanel>
+            </Border>
+        </Border>
+
+        <!-- ══════ Reject Item Overlay ══════ -->
+        <Border Background="#80000000"
+                Visibility="{Binding IsRejectDialogOpen, Converter={StaticResource BoolToVisibility}}">
+            <Border Background="{DynamicResource CardBrush}" CornerRadius="16"
+                    MaxWidth="460" Margin="40" Padding="28"
+                    VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" Opacity="0.3" ShadowDepth="4" />
+                </Border.Effect>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                        <materialDesign:PackIcon Kind="AlertOctagonOutline" Width="22" Height="22"
+                                                 Foreground="{DynamicResource DangerBrush}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                        <TextBlock Text="Reject Order Item" FontSize="18" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                    </StackPanel>
+                    <TextBlock FontSize="13" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,18" TextWrapping="Wrap">
+                        <Run Text="Rejecting" />
+                        <Run Text="{Binding RejectTargetItem.ProductName, Mode=OneWay}" FontWeight="SemiBold" />
+                        <Run Text="will deduct BOM materials from inventory." />
+                    </TextBlock>
+
+                    <!-- Error -->
+                    <Border Background="{DynamicResource DangerBgBrush}" CornerRadius="8" Padding="12,8" Margin="0,0,0,14"
+                            Visibility="{Binding RejectErrorMessage, Converter={StaticResource BoolToVisibility}}">
+                        <TextBlock Text="{Binding RejectErrorMessage}" Foreground="{DynamicResource DangerTextBrush}" FontSize="12.5" TextWrapping="Wrap" />
+                    </Border>
+
+                    <!-- Quantity -->
+                    <TextBox Text="{Binding RejectQuantity, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Reject Quantity *"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             Margin="0,0,0,14" />
+
+                    <!-- Reason -->
+                    <ComboBox SelectedValue="{Binding RejectReason}" SelectedValuePath="Tag"
+                              materialDesign:HintAssist.Hint="Reject Reason *"
+                              Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                              Margin="0,0,0,14">
+                        <ComboBoxItem Content="Wrong Printing" Tag="{x:Static enums:RejectReason.WrongPrinting}" />
+                        <ComboBoxItem Content="Incorrect Design" Tag="{x:Static enums:RejectReason.IncorrectDesign}" />
+                        <ComboBoxItem Content="Material Defect" Tag="{x:Static enums:RejectReason.MaterialDefect}" />
+                        <ComboBoxItem Content="Machine Malfunction" Tag="{x:Static enums:RejectReason.MachineMalfunction}" />
+                        <ComboBoxItem Content="Customer Return" Tag="{x:Static enums:RejectReason.CustomerReturn}" />
+                        <ComboBoxItem Content="Quality Control" Tag="{x:Static enums:RejectReason.QualityControl}" />
+                        <ComboBoxItem Content="Other" Tag="{x:Static enums:RejectReason.Other}" />
+                    </ComboBox>
+
+                    <!-- Notes -->
+                    <TextBox Text="{Binding RejectNotes, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Notes (optional)"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60"
+                             Margin="0,0,0,20" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource ModernOutlinedButton}"
+                                Command="{Binding CloseRejectDialogCommand}" Padding="16,8" Margin="0,0,10,0">
+                            <TextBlock Text="Cancel" />
+                        </Button>
+                        <Button Style="{StaticResource ModernPrimaryButton}"
+                                Command="{Binding SubmitRejectCommand}" Padding="16,8"
+                                Background="{DynamicResource DangerBrush}">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="AlertOctagonOutline" Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                <TextBlock Text="Reject" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+
+        <!-- ══════ Add Payment Overlay ══════ -->
+        <Border Background="#80000000"
+                Visibility="{Binding IsPaymentDialogOpen, Converter={StaticResource BoolToVisibility}}">
+            <Border Background="{DynamicResource CardBrush}" CornerRadius="16"
+                    MaxWidth="440" Margin="40" Padding="28"
+                    VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" Opacity="0.3" ShadowDepth="4" />
+                </Border.Effect>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                        <materialDesign:PackIcon Kind="CashPlus" Width="22" Height="22"
+                                                 Foreground="{DynamicResource PrimaryBrush}" VerticalAlignment="Center" Margin="0,0,10,0" />
+                        <TextBlock Text="Record Payment" FontSize="18" FontWeight="Bold"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                    </StackPanel>
+                    <TextBlock FontSize="13" Foreground="{DynamicResource TextMutedBrush}" Margin="0,0,0,18" TextWrapping="Wrap">
+                        <Run Text="Add a payment to this order. Balance remaining:" />
+                        <Run Text="{Binding BalanceDue, Converter={StaticResource CurrencyConverter}, Mode=OneWay}" FontWeight="SemiBold" />
+                    </TextBlock>
+
+                    <!-- Error -->
+                    <Border Background="{DynamicResource DangerBgBrush}" CornerRadius="8" Padding="12,8" Margin="0,0,0,14"
+                            Visibility="{Binding PaymentErrorMessage, Converter={StaticResource BoolToVisibility}}">
+                        <TextBlock Text="{Binding PaymentErrorMessage}" Foreground="{DynamicResource DangerTextBrush}" FontSize="12.5" TextWrapping="Wrap" />
+                    </Border>
+
+                    <!-- Amount -->
+                    <TextBox Text="{Binding PaymentAmount, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                             materialDesign:HintAssist.Hint="Payment Amount (₱) *"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             Margin="0,0,0,14" />
+
+                    <!-- Notes -->
+                    <TextBox Text="{Binding PaymentNotes, UpdateSourceTrigger=PropertyChanged}"
+                             materialDesign:HintAssist.Hint="Notes (optional)"
+                             Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                             AcceptsReturn="True" TextWrapping="Wrap" MinHeight="60"
+                             Margin="0,0,0,20" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource ModernOutlinedButton}"
+                                Command="{Binding ClosePaymentDialogCommand}" Padding="16,8" Margin="0,0,10,0">
+                            <TextBlock Text="Cancel" />
+                        </Button>
+                        <Button Style="{StaticResource ModernPrimaryButton}"
+                                Command="{Binding SubmitPaymentCommand}" Padding="16,8">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CashCheck" Width="15" Height="15" VerticalAlignment="Center" Margin="0,0,6,0" />
+                                <TextBlock Text="Record Payment" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </StackPanel>
             </Border>
         </Border>
     </Grid>

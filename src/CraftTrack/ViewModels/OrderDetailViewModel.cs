@@ -14,6 +14,7 @@ public partial class OrderDetailViewModel : ObservableObject
     private readonly ICustomerService _customerService;
     private readonly IProductService _productService;
     private readonly INotificationService _notificationService;
+    private readonly IRejectService _rejectService;
     private readonly MainViewModel _mainViewModel;
 
     [ObservableProperty] private int _orderId;
@@ -45,17 +46,34 @@ public partial class OrderDetailViewModel : ObservableObject
     [ObservableProperty] private string _productSearchTerm = string.Empty;
     [ObservableProperty] private string _stockWarningMessage = string.Empty;
 
+    // Reject dialog
+    [ObservableProperty] private bool _isRejectDialogOpen;
+    [ObservableProperty] private OrderItemViewModel? _rejectTargetItem;
+    [ObservableProperty] private decimal _rejectQuantity;
+    [ObservableProperty] private RejectReason _rejectReason = RejectReason.WrongPrinting;
+    [ObservableProperty] private string _rejectNotes = string.Empty;
+    [ObservableProperty] private string _rejectErrorMessage = string.Empty;
+
+    // Payment history
+    [ObservableProperty] private ObservableCollection<Payment> _paymentHistory = [];
+    [ObservableProperty] private bool _isPaymentDialogOpen;
+    [ObservableProperty] private decimal _paymentAmount;
+    [ObservableProperty] private string _paymentNotes = string.Empty;
+    [ObservableProperty] private string _paymentErrorMessage = string.Empty;
+
     public OrderDetailViewModel(
         IOrderService orderService,
         ICustomerService customerService,
         IProductService productService,
         INotificationService notificationService,
+        IRejectService rejectService,
         MainViewModel mainViewModel)
     {
         _orderService = orderService;
         _customerService = customerService;
         _productService = productService;
         _notificationService = notificationService;
+        _rejectService = rejectService;
         _mainViewModel = mainViewModel;
     }
 
@@ -80,6 +98,7 @@ public partial class OrderDetailViewModel : ObservableObject
         Notes = string.Empty;
         OrderItems = [];
         StockWarningMessage = string.Empty;
+        PaymentHistory = [];
     }
 
     public async Task LoadOrderAsync(int orderId)
@@ -104,11 +123,16 @@ public partial class OrderDetailViewModel : ObservableObject
         BalanceDue = order.BalanceDue;
         Notes = order.Notes ?? string.Empty;
 
+        // Load payment history
+        PaymentHistory = new ObservableCollection<Payment>(
+            order.Payments.OrderByDescending(p => p.PaidAt));
+
         OrderItems = new ObservableCollection<OrderItemViewModel>(
             order.OrderItems.Select(i =>
             {
                 var vm = new OrderItemViewModel
                 {
+                    OrderItemId = i.Id,
                     ProductId = i.ProductId ?? 0,
                     ProductName = i.Product?.Name ?? i.ItemType ?? "Unknown",
                     ProductImagePath = i.Product?.ImagePath,
@@ -337,6 +361,154 @@ public partial class OrderDetailViewModel : ObservableObject
         _mainViewModel.NavigateTo("Orders");
     }
 
+    // ── Reject Order Item ──
+
+    [RelayCommand]
+    private void OpenRejectDialog(OrderItemViewModel item)
+    {
+        if (item.OrderItemId <= 0)
+        {
+            ErrorMessage = "Save the order first before rejecting items.";
+            return;
+        }
+
+        RejectTargetItem = item;
+        RejectQuantity = 1;
+        RejectReason = RejectReason.WrongPrinting;
+        RejectNotes = string.Empty;
+        RejectErrorMessage = string.Empty;
+        IsRejectDialogOpen = true;
+    }
+
+    [RelayCommand]
+    private void CloseRejectDialog()
+    {
+        IsRejectDialogOpen = false;
+        RejectTargetItem = null;
+    }
+
+    [RelayCommand]
+    private async Task SubmitReject()
+    {
+        RejectErrorMessage = string.Empty;
+
+        if (RejectTargetItem == null) return;
+
+        if (RejectQuantity <= 0)
+        {
+            RejectErrorMessage = "Quantity must be greater than zero.";
+            return;
+        }
+
+        if (RejectQuantity > RejectTargetItem.Quantity)
+        {
+            RejectErrorMessage = $"Cannot reject more than the ordered quantity ({RejectTargetItem.Quantity}).";
+            return;
+        }
+
+        try
+        {
+            var record = await _rejectService.RejectOrderItemAsync(
+                RejectTargetItem.OrderItemId,
+                RejectQuantity,
+                RejectReason,
+                string.IsNullOrWhiteSpace(RejectNotes) ? null : RejectNotes.Trim());
+
+            await _notificationService.GenerateRejectNotificationAsync(record, RejectTargetItem.ProductName);
+            await _mainViewModel.RefreshNotificationBadgeAsync();
+
+            IsRejectDialogOpen = false;
+            RejectTargetItem = null;
+            ErrorMessage = string.Empty;
+            StockWarningMessage = $"✓ {RejectQuantity:N0} item(s) rejected. Materials deducted from inventory.";
+        }
+        catch (Exception ex)
+        {
+            RejectErrorMessage = ex.Message;
+        }
+    }
+
+    // ── Payment History ──
+
+    [RelayCommand]
+    private void OpenPaymentDialog()
+    {
+        if (IsNewOrder || OrderId <= 0)
+        {
+            ErrorMessage = "Save the order first before adding payments.";
+            return;
+        }
+
+        PaymentAmount = 0;
+        PaymentNotes = string.Empty;
+        PaymentErrorMessage = string.Empty;
+        IsPaymentDialogOpen = true;
+    }
+
+    [RelayCommand]
+    private void ClosePaymentDialog()
+    {
+        IsPaymentDialogOpen = false;
+    }
+
+    [RelayCommand]
+    private async Task SubmitPayment()
+    {
+        PaymentErrorMessage = string.Empty;
+
+        if (PaymentAmount <= 0)
+        {
+            PaymentErrorMessage = "Amount must be greater than zero.";
+            return;
+        }
+
+        try
+        {
+            var payment = await _orderService.AddPaymentAsync(
+                OrderId,
+                PaymentAmount,
+                string.IsNullOrWhiteSpace(PaymentNotes) ? null : PaymentNotes.Trim());
+
+            // Update local state
+            AmountPaid += PaymentAmount;
+            BalanceDue = TotalPrice - AmountPaid;
+
+            if (AmountPaid >= TotalPrice && TotalPrice > 0)
+                PaymentType = PaymentType.FullPayment;
+            else if (AmountPaid > 0)
+                PaymentType = PaymentType.Downpayment;
+            else
+                PaymentType = PaymentType.Unpaid;
+
+            PaymentHistory.Insert(0, payment);
+            IsPaymentDialogOpen = false;
+        }
+        catch (Exception ex)
+        {
+            PaymentErrorMessage = ex.Message;
+        }
+    }
+
+    [RelayCommand]
+    private async Task DeletePayment(Payment payment)
+    {
+        var deleted = await _orderService.DeletePaymentAsync(payment.Id);
+        if (!deleted) return;
+
+        AmountPaid -= payment.Amount;
+        if (AmountPaid < 0) AmountPaid = 0;
+        BalanceDue = TotalPrice - AmountPaid;
+
+        if (AmountPaid >= TotalPrice && TotalPrice > 0)
+            PaymentType = PaymentType.FullPayment;
+        else if (AmountPaid > 0)
+            PaymentType = PaymentType.Downpayment;
+        else
+            PaymentType = PaymentType.Unpaid;
+
+        PaymentHistory.Remove(payment);
+    }
+
     [RelayCommand]
     private void Cancel()
     {
@@ -346,6 +518,7 @@ public partial class OrderDetailViewModel : ObservableObject
 
 public partial class OrderItemViewModel : ObservableObject
 {
+    [ObservableProperty] private int _orderItemId; // database PK — 0 for unsaved items
     [ObservableProperty] private int _productId;
     [ObservableProperty] private string _productName = string.Empty;
     [ObservableProperty] private string? _productImagePath;

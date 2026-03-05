@@ -19,4 +19,7 @@ public static class CurrencyHelper
             return $"{CurrencySymbol}{amount / 1_000:N1}K";
         return Format(amount);
     }
+
+    public static string Format(double amount) => Format((decimal)amount);
+    public static string FormatShort(double amount) => FormatShort((decimal)amount);
 }

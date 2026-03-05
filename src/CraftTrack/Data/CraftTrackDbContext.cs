@@ -15,6 +15,8 @@ public class CraftTrackDbContext : DbContext
     public DbSet<Notification> Notifications => Set<Notification>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<ProductMaterial> ProductMaterials => Set<ProductMaterial>();
+    public DbSet<RejectRecord> RejectRecords => Set<RejectRecord>();
+    public DbSet<Payment> Payments => Set<Payment>();
 
     public CraftTrackDbContext(DbContextOptions<CraftTrackDbContext> options)
         : base(options)
@@ -129,6 +131,40 @@ public class CraftTrackDbContext : DbContext
 
             entity.HasIndex(e => e.Date);
             entity.HasIndex(e => e.Category);
+        });
+
+        // RejectRecord
+        modelBuilder.Entity<RejectRecord>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasOne(e => e.OrderItem)
+                  .WithMany()
+                  .HasForeignKey(e => e.OrderItemId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasOne(e => e.InventoryItem)
+                  .WithMany()
+                  .HasForeignKey(e => e.InventoryItemId)
+                  .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(e => e.Date);
+            entity.HasIndex(e => e.RejectReason);
+            entity.HasIndex(e => e.InventoryItemId);
+            entity.HasIndex(e => e.OrderItemId);
+        });
+
+        // Payment
+        modelBuilder.Entity<Payment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Order)
+                  .WithMany(o => o.Payments)
+                  .HasForeignKey(e => e.OrderId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.OrderId);
+            entity.HasIndex(e => e.PaidAt);
         });
 
         // Notification

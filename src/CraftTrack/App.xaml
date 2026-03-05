@@ -26,6 +26,12 @@
             <converters:ExpenseCategoryColorConverter x:Key="ExpenseCategoryColorConverter" />
             <converters:PercentageToGridLengthConverter x:Key="PctToGridLength" />
             <converters:PercentageRemainderConverter x:Key="PctRemainder" />
+            <converters:IntToVisibilityConverter x:Key="IntToVisibility" />
+            <converters:IntToBoolToVisibilityConverter x:Key="IntToBoolToVisibility" />
+            <converters:DecimalToBarWidthConverter x:Key="DecimalToBarWidth" />
+            <converters:StringToVisibilityConverter x:Key="StringToVisibility" />
+            <converters:IntToZeroVisibilityConverter x:Key="IntToZeroVisibility" />
+            <converters:StatusCountConverter x:Key="StatusCountConverter" />
 
             <!-- View-ViewModel DataTemplates -->
             <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
@@ -60,6 +66,12 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
                 <views:SettingsView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ExpensesViewModel}">
+                <views:ExpensesView />
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:RejectListViewModel}">
+                <views:RejectListView />
             </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
