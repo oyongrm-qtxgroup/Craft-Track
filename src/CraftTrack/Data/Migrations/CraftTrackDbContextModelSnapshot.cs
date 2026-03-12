@@ -17,6 +17,35 @@ namespace CraftTrack.Data.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.3");
 
+            modelBuilder.Entity("CraftTrack.Models.CostHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("InventoryItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("NewCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("OldCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InventoryItemId");
+
+                    b.ToTable("CostHistories");
+                });
+
             modelBuilder.Entity("CraftTrack.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
@@ -114,11 +143,19 @@ namespace CraftTrack.Data.Migrations
                     b.Property<decimal>("Quantity")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Size")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("UnitCost")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("UnitOfMeasure")
                         .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Variant")
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -427,6 +464,17 @@ namespace CraftTrack.Data.Migrations
                     b.ToTable("StockAdjustments");
                 });
 
+            modelBuilder.Entity("CraftTrack.Models.CostHistory", b =>
+                {
+                    b.HasOne("CraftTrack.Models.InventoryItem", "InventoryItem")
+                        .WithMany("CostHistories")
+                        .HasForeignKey("InventoryItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InventoryItem");
+                });
+
             modelBuilder.Entity("CraftTrack.Models.Expense", b =>
                 {
                     b.HasOne("CraftTrack.Models.Order", "Order")
@@ -548,6 +596,8 @@ namespace CraftTrack.Data.Migrations
 
             modelBuilder.Entity("CraftTrack.Models.InventoryItem", b =>
                 {
+                    b.Navigation("CostHistories");
+
                     b.Navigation("ProductMaterials");
 
                     b.Navigation("StockAdjustments");

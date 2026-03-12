@@ -17,6 +17,7 @@ public class CraftTrackDbContext : DbContext
     public DbSet<ProductMaterial> ProductMaterials => Set<ProductMaterial>();
     public DbSet<RejectRecord> RejectRecords => Set<RejectRecord>();
     public DbSet<Payment> Payments => Set<Payment>();
+    public DbSet<CostHistory> CostHistories => Set<CostHistory>();
 
     public CraftTrackDbContext(DbContextOptions<CraftTrackDbContext> options)
         : base(options)
@@ -114,6 +115,18 @@ public class CraftTrackDbContext : DbContext
             entity.HasKey(e => e.Id);
             entity.HasOne(e => e.InventoryItem)
                   .WithMany(i => i.StockAdjustments)
+                  .HasForeignKey(e => e.InventoryItemId)
+                  .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(e => e.InventoryItemId);
+        });
+
+        // CostHistory
+        modelBuilder.Entity<CostHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.InventoryItem)
+                  .WithMany(i => i.CostHistories)
                   .HasForeignKey(e => e.InventoryItemId)
                   .OnDelete(DeleteBehavior.Cascade);
 

@@ -2,7 +2,7 @@
 ; The Oyong's Ink & Print Studio
 
 #define MyAppName "CraftTrack"
-#define MyAppVersion "1.2.0"
+#define MyAppVersion "1.3.0"
 #define MyAppPublisher "The Oyong's Ink & Print Studio"
 #define MyAppExeName "CraftTrack.exe"
 #define MyAppURL "https://github.com/oyong"

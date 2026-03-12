@@ -109,6 +109,14 @@ public partial class MainViewModel : ObservableObject
         CurrentViewTitle = itemId.HasValue ? "Edit Inventory Item" : "New Inventory Item";
     }
 
+    public void NavigateToInventoryDetailCopy(int itemId)
+    {
+        var vm = GetViewModel<InventoryDetailViewModel>();
+        vm.LoadItemForCopyAsync(itemId).ConfigureAwait(false);
+        CurrentView = vm;
+        CurrentViewTitle = "Copy Inventory Item";
+    }
+
     public void NavigateToProductDetail(int? productId = null)
     {
         var vm = GetViewModel<ProductDetailViewModel>();

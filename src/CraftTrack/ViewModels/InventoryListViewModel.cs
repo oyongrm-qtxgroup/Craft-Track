@@ -45,6 +45,12 @@ public partial class InventoryListViewModel : ObservableObject
     }
 
     [RelayCommand]
+    private void CopyItem(InventoryItem item)
+    {
+        _mainViewModel.NavigateToInventoryDetailCopy(item.Id);
+    }
+
+    [RelayCommand]
     private async Task DeleteItem(InventoryItem item)
     {
         var result = System.Windows.MessageBox.Show(

@@ -39,6 +39,23 @@
                                  Style="{StaticResource MaterialDesignOutlinedTextBox}"
                                  Margin="0,0,8,12" />
 
+                        <TextBox Grid.Column="1" Text="{Binding Variant, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Variant"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 Margin="8,0,0,12" />
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox Grid.Column="0" Text="{Binding Size, UpdateSourceTrigger=PropertyChanged}"
+                                 materialDesign:HintAssist.Hint="Size"
+                                 Style="{StaticResource MaterialDesignOutlinedTextBox}"
+                                 Margin="0,0,8,12" />
+
                         <ComboBox Grid.Column="1"
                                   materialDesign:HintAssist.Hint="Category *"
                                   Style="{StaticResource MaterialDesignOutlinedComboBox}"
@@ -179,6 +196,33 @@
                                 <DataGridTextColumn Header="Qty" Binding="{Binding Quantity, StringFormat=N2}" Width="80" />
                                 <DataGridTextColumn Header="Est. Cost" Binding="{Binding EstimatedCost, StringFormat=N2}" Width="100" />
                                 <DataGridTextColumn Header="Notes" Binding="{Binding Notes}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Grid>
+                </Border>
+
+                <!-- Cost History -->
+                <TextBlock Text="Cost History" Style="{StaticResource SectionTitle}" />
+                <Border Style="{StaticResource ModernCard}" Padding="0" Margin="0,0,0,20">
+                    <Grid>
+                        <!-- Empty state -->
+                        <TextBlock Text="No cost changes recorded for this item."
+                                   FontSize="13" Foreground="{DynamicResource TextMutedBrush}"
+                                   HorizontalAlignment="Center" Margin="0,16,0,16"
+                                   Visibility="{Binding CostHistory.Count, Converter={StaticResource InverseBoolToVisibility}}" />
+
+                        <DataGrid ItemsSource="{Binding CostHistory}"
+                                  Style="{StaticResource ModernDataGrid}"
+                                  ColumnHeaderStyle="{StaticResource ModernColumnHeader}"
+                                  CellStyle="{StaticResource ModernDataGridCell}"
+                                  RowStyle="{StaticResource ModernDataGridRow}"
+                                  MaxHeight="250"
+                                  Visibility="{Binding CostHistory.Count, Converter={StaticResource BoolToVisibility}}">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Date" Binding="{Binding ChangedAt, StringFormat=g}" Width="160" />
+                                <DataGridTextColumn Header="Old Cost" Binding="{Binding OldCost, Converter={StaticResource CurrencyConverter}}" Width="120" />
+                                <DataGridTextColumn Header="New Cost" Binding="{Binding NewCost, Converter={StaticResource CurrencyConverter}}" Width="120" />
+                                <DataGridTextColumn Header="Note" Binding="{Binding Note}" Width="*" />
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>

@@ -53,6 +53,8 @@
                       MouseDoubleClick="DataGrid_MouseDoubleClick">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
+                    <DataGridTextColumn Header="Variant" Binding="{Binding Variant}" Width="140" />
+                    <DataGridTextColumn Header="Size" Binding="{Binding Size}" Width="100" />
                     <DataGridTextColumn Header="Category" Binding="{Binding Category, Converter={StaticResource EnumDescriptionConverter}}" Width="140" />
                     <DataGridTemplateColumn Header="Stock" Width="120" SortMemberPath="Quantity">
                         <DataGridTemplateColumn.CellTemplate>
@@ -90,6 +92,11 @@
                                             Command="{Binding DataContext.EditItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                             CommandParameter="{Binding}">
                                         <materialDesign:PackIcon Kind="PencilOutline" Width="17" Height="17" />
+                                    </Button>
+                                    <Button Style="{StaticResource ModernIconButton}" ToolTip="Copy"
+                                            Command="{Binding DataContext.CopyItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                            CommandParameter="{Binding}">
+                                        <materialDesign:PackIcon Kind="ContentCopy" Width="17" Height="17" />
                                     </Button>
                                     <Button Style="{StaticResource ModernIconButtonDanger}" ToolTip="Delete"
                                             Command="{Binding DataContext.DeleteItemCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"

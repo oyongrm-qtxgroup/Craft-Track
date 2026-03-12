@@ -15,4 +15,5 @@ public interface IInventoryService
     Task<List<InventoryItem>> GetLowStockItemsAsync();
     Task<int> GetLowStockCountAsync();
     Task<List<StockAdjustment>> GetAdjustmentHistoryAsync(int itemId);
+    Task<List<CostHistory>> GetCostHistoryAsync(int itemId);
 }

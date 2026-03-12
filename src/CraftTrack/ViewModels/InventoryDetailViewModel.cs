@@ -17,6 +17,8 @@ public partial class InventoryDetailViewModel : ObservableObject
     [ObservableProperty] private int _itemId;
     [ObservableProperty] private bool _isNewItem = true;
     [ObservableProperty] private string _name = string.Empty;
+    [ObservableProperty] private string _variant = string.Empty;
+    [ObservableProperty] private string _size = string.Empty;
     [ObservableProperty] private InventoryCategory _category = InventoryCategory.RawMaterial;
     [ObservableProperty] private string _unitOfMeasure = string.Empty;
     [ObservableProperty] private decimal _quantity;
@@ -38,6 +40,7 @@ public partial class InventoryDetailViewModel : ObservableObject
     [ObservableProperty] private string _rejectNotes = string.Empty;
     [ObservableProperty] private string _rejectErrorMessage = string.Empty;
     [ObservableProperty] private ObservableCollection<RejectRecord> _rejectHistory = [];
+    [ObservableProperty] private ObservableCollection<CostHistory> _costHistory = [];
 
     public InventoryDetailViewModel(
         IInventoryService inventoryService,
@@ -56,6 +59,8 @@ public partial class InventoryDetailViewModel : ObservableObject
         IsNewItem = true;
         ItemId = 0;
         Name = string.Empty;
+        Variant = string.Empty;
+        Size = string.Empty;
         Category = InventoryCategory.RawMaterial;
         UnitOfMeasure = string.Empty;
         Quantity = 0;
@@ -63,6 +68,7 @@ public partial class InventoryDetailViewModel : ObservableObject
         UnitCost = 0;
         Notes = string.Empty;
         AdjustmentHistory = [];
+        CostHistory = [];
     }
 
     public async Task LoadItemAsync(int itemId)
@@ -73,6 +79,8 @@ public partial class InventoryDetailViewModel : ObservableObject
         IsNewItem = false;
         ItemId = item.Id;
         Name = item.Name;
+        Variant = item.Variant ?? string.Empty;
+        Size = item.Size ?? string.Empty;
         Category = item.Category;
         UnitOfMeasure = item.UnitOfMeasure ?? string.Empty;
         Quantity = item.Quantity;
@@ -84,6 +92,31 @@ public partial class InventoryDetailViewModel : ObservableObject
         // Load reject history for this item
         var rejects = await _rejectService.GetRejectRecordsByInventoryItemAsync(itemId);
         RejectHistory = new ObservableCollection<RejectRecord>(rejects);
+
+        // Load cost history
+        var costs = await _inventoryService.GetCostHistoryAsync(itemId);
+        CostHistory = new ObservableCollection<CostHistory>(costs);
+    }
+
+    public async Task LoadItemForCopyAsync(int itemId)
+    {
+        var item = await _inventoryService.GetItemWithAdjustmentsAsync(itemId);
+        if (item == null) return;
+
+        IsNewItem = true;
+        ItemId = 0;
+        Name = item.Name + " (Copy)";
+        Variant = item.Variant ?? string.Empty;
+        Size = item.Size ?? string.Empty;
+        Category = item.Category;
+        UnitOfMeasure = item.UnitOfMeasure ?? string.Empty;
+        Quantity = 0;
+        LowStockThreshold = item.LowStockThreshold;
+        UnitCost = item.UnitCost;
+        Notes = item.Notes ?? string.Empty;
+        AdjustmentHistory = [];
+        RejectHistory = [];
+        CostHistory = [];
     }
 
     [RelayCommand]
@@ -102,6 +135,8 @@ public partial class InventoryDetailViewModel : ObservableObject
             var item = new InventoryItem
             {
                 Name = Name.Trim(),
+                Variant = string.IsNullOrWhiteSpace(Variant) ? null : Variant.Trim(),
+                Size = string.IsNullOrWhiteSpace(Size) ? null : Size.Trim(),
                 Category = Category,
                 UnitOfMeasure = string.IsNullOrWhiteSpace(UnitOfMeasure) ? null : UnitOfMeasure.Trim(),
                 Quantity = Quantity,
@@ -120,6 +155,8 @@ public partial class InventoryDetailViewModel : ObservableObject
             if (existing == null) return;
 
             existing.Name = Name.Trim();
+            existing.Variant = string.IsNullOrWhiteSpace(Variant) ? null : Variant.Trim();
+            existing.Size = string.IsNullOrWhiteSpace(Size) ? null : Size.Trim();
             existing.Category = Category;
             existing.UnitOfMeasure = string.IsNullOrWhiteSpace(UnitOfMeasure) ? null : UnitOfMeasure.Trim();
             existing.LowStockThreshold = LowStockThreshold;

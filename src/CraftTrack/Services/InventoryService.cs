@@ -51,6 +51,20 @@ public class InventoryService : IInventoryService
     public async Task<InventoryItem> UpdateItemAsync(InventoryItem item)
     {
         using var context = await _contextFactory.CreateDbContextAsync();
+
+        // Auto-record cost history if unit cost changed
+        var existing = await context.InventoryItems.AsNoTracking().FirstOrDefaultAsync(i => i.Id == item.Id);
+        if (existing != null && existing.UnitCost != item.UnitCost)
+        {
+            context.CostHistories.Add(new CostHistory
+            {
+                InventoryItemId = item.Id,
+                OldCost = existing.UnitCost,
+                NewCost = item.UnitCost,
+                ChangedAt = DateTime.Now
+            });
+        }
+
         context.InventoryItems.Update(item);
         await context.SaveChangesAsync();
         return item;
@@ -121,6 +135,15 @@ public class InventoryService : IInventoryService
         return await context.StockAdjustments
             .Where(a => a.InventoryItemId == itemId)
             .OrderByDescending(a => a.AdjustedAt)
+            .ToListAsync();
+    }
+
+    public async Task<List<CostHistory>> GetCostHistoryAsync(int itemId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+        return await context.CostHistories
+            .Where(c => c.InventoryItemId == itemId)
+            .OrderByDescending(c => c.ChangedAt)
             .ToListAsync();
     }
 }
