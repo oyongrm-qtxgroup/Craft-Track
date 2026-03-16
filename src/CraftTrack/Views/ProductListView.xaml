@@ -92,7 +92,9 @@
                                     <StackPanel Grid.Row="1" Margin="16,12,16,14">
                                         <TextBlock Text="{Binding Name}" FontSize="14.5" FontWeight="SemiBold"
                                                    Foreground="{DynamicResource TextPrimaryBrush}"
-                                                   TextTrimming="CharacterEllipsis" />
+                                                   TextWrapping="Wrap"
+                                                   TextTrimming="None"
+                                                   MaxHeight="40" />
                                         <TextBlock Text="{Binding Description}" FontSize="12"
                                                    Foreground="{DynamicResource TextMutedBrush}" Margin="0,2,0,0"
                                                    TextTrimming="CharacterEllipsis" MaxHeight="18" />

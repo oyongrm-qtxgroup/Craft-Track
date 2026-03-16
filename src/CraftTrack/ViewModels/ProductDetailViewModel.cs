@@ -81,7 +81,9 @@ public partial class ProductDetailViewModel : ObservableObject
                 InventoryItemName = m.InventoryItem.Name,
                 UnitOfMeasure = m.InventoryItem.UnitOfMeasure ?? string.Empty,
                 QuantityRequired = m.QuantityRequired,
-                UnitCost = m.InventoryItem.UnitCost
+                UnitCost = m.InventoryItem.UnitCost,
+                Variant = m.InventoryItem.Variant,
+                Size = m.InventoryItem.Size
             }));
     }
 
@@ -186,7 +188,9 @@ public partial class ProductDetailViewModel : ObservableObject
             InventoryItemName = item.Name,
             UnitOfMeasure = item.UnitOfMeasure ?? string.Empty,
             QuantityRequired = 1,
-            UnitCost = item.UnitCost
+            UnitCost = item.UnitCost,
+            Variant = item.Variant,
+            Size = item.Size
         });
 
         InventorySearchTerm = string.Empty;

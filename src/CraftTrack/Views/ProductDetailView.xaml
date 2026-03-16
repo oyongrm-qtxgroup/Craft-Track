@@ -156,14 +156,21 @@
                                                 <materialDesign:PackIcon Kind="CubeOutline" Width="16" Height="16"
                                                                          VerticalAlignment="Center" Margin="0,0,8,0"
                                                                          Foreground="{DynamicResource PrimaryBrush}" />
-                                                <TextBlock VerticalAlignment="Center">
-                                                    <Run Text="{Binding Name}" FontWeight="SemiBold" />
-                                                    <Run Text=" — " />
-                                                    <Run Text="{Binding UnitOfMeasure}" Foreground="{DynamicResource TextMutedBrush}" />
-                                                    <Run Text=" (Stock: " Foreground="{DynamicResource TextMutedBrush}" />
-                                                    <Run Text="{Binding Quantity, StringFormat=N2}" Foreground="{DynamicResource TextMutedBrush}" />
-                                                    <Run Text=")" Foreground="{DynamicResource TextMutedBrush}" />
-                                                </TextBlock>
+                                                <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                                    <TextBlock>
+                                                        <Run Text="{Binding Name}" FontWeight="SemiBold" />
+                                                        <Run Text=" — " />
+                                                        <Run Text="{Binding UnitOfMeasure}" Foreground="{DynamicResource TextMutedBrush}" />
+                                                        <Run Text=" (Stock: " Foreground="{DynamicResource TextMutedBrush}" />
+                                                        <Run Text="{Binding Quantity, StringFormat=N2}" Foreground="{DynamicResource TextMutedBrush}" />
+                                                        <Run Text=")" Foreground="{DynamicResource TextMutedBrush}" />
+                                                    </TextBlock>
+                                                    <TextBlock FontSize="11" Foreground="{DynamicResource TextMutedBrush}">
+                                                        <Run Text="{Binding Variant}" />
+                                                        <Run Text=" " />
+                                                        <Run Text="{Binding Size}" />
+                                                    </TextBlock>
+                                                </StackPanel>
                                             </StackPanel>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
@@ -210,9 +217,14 @@
                                             <materialDesign:PackIcon Kind="CubeOutline" Width="16" Height="16"
                                                                      Foreground="{DynamicResource PrimaryBrush}"
                                                                      VerticalAlignment="Center" Margin="0,0,8,0" />
-                                            <TextBlock Text="{Binding InventoryItemName}" FontWeight="Medium"
-                                                       Foreground="{DynamicResource TextPrimaryBrush}"
-                                                       VerticalAlignment="Center" />
+                                            <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding InventoryItemName}" FontWeight="Medium"
+                                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                    <TextBlock Text="{Binding Variant}" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Visibility="{Binding Variant, Converter={StaticResource BoolToVisibility}}"/>
+                                                    <TextBlock Text="{Binding Size, StringFormat=' - {0}'}" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Visibility="{Binding Size, Converter={StaticResource BoolToVisibility}}"/>
+                                                </StackPanel>
+                                            </StackPanel>
                                         </StackPanel>
 
                                         <TextBlock Grid.Column="1" Text="{Binding UnitOfMeasure}"

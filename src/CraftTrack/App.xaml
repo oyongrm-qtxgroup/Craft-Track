@@ -5,7 +5,8 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              xmlns:converters="clr-namespace:CraftTrack.Converters"
              xmlns:vm="clr-namespace:CraftTrack.ViewModels"
-             xmlns:views="clr-namespace:CraftTrack.Views">
+             xmlns:views="clr-namespace:CraftTrack.Views"
+             ShutdownMode="OnMainWindowClose">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

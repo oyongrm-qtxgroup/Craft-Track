@@ -1,9 +1,11 @@
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CraftTrack.Models;
 using CraftTrack.Services;
+using Microsoft.Win32;
 using ThemeMode = CraftTrack.Models.ThemeMode;
 
 namespace CraftTrack.ViewModels;
@@ -11,6 +13,7 @@ namespace CraftTrack.ViewModels;
 public partial class SettingsViewModel : ObservableObject
 {
     private readonly IThemeService _themeService;
+    private readonly IBrandingService _brandingService;
     private bool _suppressColorSync;
 
     [ObservableProperty]
@@ -42,11 +45,29 @@ public partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private Color _sidebarColor;
 
+    // ── Branding ──
+
+    [ObservableProperty]
+    private string _brandingAppName = "CraftTrack";
+
+    [ObservableProperty]
+    private string _brandingAppSubtitle = string.Empty;
+
+    [ObservableProperty]
+    private ImageSource? _brandingLogoPreview;
+
+    [ObservableProperty]
+    private string? _pendingLogoPngPath;
+
+    [ObservableProperty]
+    private string? _pendingIcoPath;
+
     public ObservableCollection<ColorScheme> Presets { get; } = new(ColorPresets.All);
 
-    public SettingsViewModel(IThemeService themeService)
+    public SettingsViewModel(IThemeService themeService, IBrandingService brandingService)
     {
         _themeService = themeService;
+        _brandingService = brandingService;
         _selectedTheme = _themeService.CurrentMode;
 
         // Initialize color properties from current scheme
@@ -55,6 +76,10 @@ public partial class SettingsViewModel : ObservableObject
         _selectedPresetName = _themeService.CurrentColorScheme.Name;
         _isCustom = false;
         _suppressColorSync = false;
+
+        BrandingAppName = _brandingService.AppName;
+        BrandingAppSubtitle = _brandingService.AppSubtitle;
+        BrandingLogoPreview = _brandingService.LogoImageSource;
     }
 
     partial void OnSelectedThemeChanged(ThemeMode value)
@@ -92,6 +117,53 @@ public partial class SettingsViewModel : ObservableObject
         _suppressColorSync = false;
 
         _themeService.SetPreset(SelectedPresetName);
+    }
+
+    [RelayCommand]
+    private void BrowseLogo()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = "PNG files (*.png)|*.png",
+            Multiselect = false,
+            CheckFileExists = true
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            PendingLogoPngPath = dialog.FileName;
+            BrandingLogoPreview = new ImageSourceConverter().ConvertFromString(dialog.FileName) as ImageSource;
+        }
+    }
+
+    [RelayCommand]
+    private void BrowseIco()
+    {
+        var dialog = new OpenFileDialog
+        {
+            Filter = "Icon files (*.ico)|*.ico",
+            Multiselect = false,
+            CheckFileExists = true
+        };
+
+        if (dialog.ShowDialog() == true)
+            PendingIcoPath = dialog.FileName;
+    }
+
+    [RelayCommand]
+    private void ApplyBranding()
+    {
+        _brandingService.SetBranding(BrandingAppName, BrandingAppSubtitle, PendingLogoPngPath, PendingIcoPath);
+
+        BrandingAppName = _brandingService.AppName;
+        BrandingAppSubtitle = _brandingService.AppSubtitle;
+        BrandingLogoPreview = _brandingService.LogoImageSource;
+
+        MessageBox.Show(
+            "Branding changes saved. Taskbar and shortcuts were updated when applicable.",
+            "Branding Updated",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
     }
 
     private void PushColorChange()

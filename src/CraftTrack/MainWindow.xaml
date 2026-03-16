@@ -6,8 +6,8 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:vm="clr-namespace:CraftTrack.ViewModels"
         mc:Ignorable="d"
-        Title="The Oyong's Ink &amp; Print Studio — CraftTrack"
-        Icon="Assets/logo.png"
+        Title="{Binding WindowTitle}"
+        Icon="{Binding TaskbarIconSource}"
         Height="768" Width="1280"
         MinHeight="600" MinWidth="960"
         WindowStartupLocation="CenterScreen"
@@ -26,14 +26,12 @@
                 <Border DockPanel.Dock="Top" Margin="24,28,24,0">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Border CornerRadius="10" Margin="0,0,12,0" Width="44" Height="44">
-                                <Border.Background>
-                                    <ImageBrush ImageSource="Assets/logo.png" Stretch="UniformToFill" />
-                                </Border.Background>
+                            <Border CornerRadius="10" Margin="0,0,12,0" Width="44" Height="44" ClipToBounds="True">
+                                <Image Source="{Binding LogoImageSource}" Stretch="UniformToFill" />
                             </Border>
                             <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="Oyong's Ink" FontSize="18" FontWeight="Bold" Foreground="White" />
-                                <TextBlock Text="&amp; Print Studio" FontSize="10.5"
+                                <TextBlock Text="{Binding AppName}" FontSize="18" FontWeight="Bold" Foreground="White" />
+                                <TextBlock Text="{Binding AppSubtitle}" FontSize="10.5"
                                            Foreground="{DynamicResource SidebarSubtitleBrush}" Margin="0,1,0,0" FontWeight="Medium" />
                             </StackPanel>
                         </StackPanel>

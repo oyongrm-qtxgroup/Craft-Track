@@ -1,6 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CraftTrack.Services;
+using System.Windows;
+using System.Windows.Media;
 
 namespace CraftTrack.ViewModels;
 
@@ -11,6 +13,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IInventoryService _inventoryService;
     private readonly IFinanceService _financeService;
     private readonly INotificationService _notificationService;
+    private readonly IBrandingService _brandingService;
     private readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
@@ -25,12 +28,28 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _hasNotifications;
 
+    [ObservableProperty]
+    private string _appName = "CraftTrack";
+
+    [ObservableProperty]
+    private string _appSubtitle = string.Empty;
+
+    [ObservableProperty]
+    private ImageSource? _logoImageSource;
+
+    [ObservableProperty]
+    private ImageSource? _taskbarIconSource;
+
+    [ObservableProperty]
+    private string _windowTitle = "CraftTrack - CraftTrack";
+
     public MainViewModel(
         IOrderService orderService,
         ICustomerService customerService,
         IInventoryService inventoryService,
         IFinanceService financeService,
         INotificationService notificationService,
+        IBrandingService brandingService,
         IServiceProvider serviceProvider)
     {
         _orderService = orderService;
@@ -38,7 +57,11 @@ public partial class MainViewModel : ObservableObject
         _inventoryService = inventoryService;
         _financeService = financeService;
         _notificationService = notificationService;
+        _brandingService = brandingService;
         _serviceProvider = serviceProvider;
+
+        RefreshBrandingProperties();
+        _brandingService.BrandingChanged += OnBrandingChanged;
     }
 
     public async Task InitializeAsync()
@@ -132,6 +155,30 @@ public partial class MainViewModel : ObservableObject
     {
         NotificationBadgeCount = await _notificationService.GetUnacknowledgedCountAsync();
         HasNotifications = NotificationBadgeCount > 0;
+    }
+
+    partial void OnAppNameChanged(string value)
+    {
+        WindowTitle = $"{(string.IsNullOrWhiteSpace(value) ? "CraftTrack" : value)} - CraftTrack";
+    }
+
+    private void OnBrandingChanged()
+    {
+        if (Application.Current?.Dispatcher is null)
+        {
+            RefreshBrandingProperties();
+            return;
+        }
+
+        Application.Current.Dispatcher.Invoke(RefreshBrandingProperties);
+    }
+
+    private void RefreshBrandingProperties()
+    {
+        AppName = _brandingService.AppName;
+        AppSubtitle = _brandingService.AppSubtitle;
+        LogoImageSource = _brandingService.LogoImageSource;
+        TaskbarIconSource = _brandingService.IcoImageSource;
     }
 
     private T GetViewModel<T>() where T : notnull

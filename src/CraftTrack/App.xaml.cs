@@ -3,6 +3,7 @@ using System.Windows.Threading;
 using CraftTrack.Data;
 using CraftTrack.Services;
 using CraftTrack.ViewModels;
+using CraftTrack.Views;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -47,8 +48,22 @@ public partial class App : Application
         var themeService = _serviceProvider.GetRequiredService<IThemeService>();
         themeService.Initialize();
 
+        // Initialize branding
+        var brandingService = _serviceProvider.GetRequiredService<IBrandingService>();
+        brandingService.Initialize();
+
+        // Show first-run setup wizard before opening the main window
+        if (!brandingService.IsSetupComplete)
+        {
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+            var wizard = new SetupWizardWindow(_serviceProvider.GetRequiredService<SetupWizardViewModel>());
+            wizard.ShowDialog();
+            ShutdownMode = ShutdownMode.OnMainWindowClose;
+        }
+
         // Show main window
         var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
+        MainWindow = mainWindow;
         mainWindow.Show();
 
         // Initialize main view model
@@ -75,6 +90,7 @@ public partial class App : Application
         services.AddSingleton<IFinanceService, FinanceService>();
         services.AddSingleton<IRejectService, RejectService>();
         services.AddSingleton<IThemeService, ThemeService>();
+        services.AddSingleton<IBrandingService, BrandingService>();
 
         // ViewModels
         services.AddSingleton<MainViewModel>();
@@ -91,6 +107,7 @@ public partial class App : Application
         services.AddTransient<SettingsViewModel>();
         services.AddTransient<ExpensesViewModel>();
         services.AddTransient<RejectListViewModel>();
+        services.AddTransient<SetupWizardViewModel>();
 
         // Windows
         services.AddSingleton<MainWindow>();

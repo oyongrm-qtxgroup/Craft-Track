@@ -8,11 +8,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>app.ico</ApplicationIcon>
+    <ApplicationIcon>default.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\logo.png" />
+    <Resource Include="Assets\default.png" />
+    <Resource Include="default.ico" />
   </ItemGroup>
 
   <ItemGroup>
