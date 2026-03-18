@@ -1,7 +1,5 @@
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CraftTrack.Models;
@@ -20,22 +18,16 @@ public partial class SetupWizardViewModel : ObservableObject
     private int _currentStep;
 
     [ObservableProperty]
-    private string _appName = "CraftTrack";
+    private string _appName = "Craft Track";
 
     [ObservableProperty]
-    private string _appSubtitle = string.Empty;
+    private string _appSubtitle = "Your small business helper at hand";
 
     [ObservableProperty]
     private string? _logoPngPath;
 
     [ObservableProperty]
-    private string? _icoPath;
-
-    [ObservableProperty]
     private ImageSource? _logoPreview;
-
-    [ObservableProperty]
-    private ImageSource? _icoPreview;
 
     [ObservableProperty]
     private ThemeMode _selectedTheme;
@@ -59,7 +51,6 @@ public partial class SetupWizardViewModel : ObservableObject
         AppName = brandingService.AppName;
         AppSubtitle = brandingService.AppSubtitle;
         LogoPreview = brandingService.LogoImageSource;
-        IcoPreview = brandingService.IcoImageSource;
         SelectedTheme = themeService.CurrentMode;
         SelectedPresetName = themeService.CurrentColorScheme.Name;
     }
@@ -116,46 +107,12 @@ public partial class SetupWizardViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void BrowseIco()
-    {
-        var dialog = new OpenFileDialog
-        {
-            Filter = "Icon files (*.ico)|*.ico",
-            Multiselect = false,
-            CheckFileExists = true
-        };
-
-        if (dialog.ShowDialog() == true)
-        {
-            IcoPath = dialog.FileName;
-            IcoPreview = LoadIcoPreview(dialog.FileName);
-        }
-    }
-
-    [RelayCommand]
     private void Finish()
     {
         _themeService.SetTheme(SelectedTheme);
         _themeService.SetPreset(SelectedPresetName);
-        _brandingService.SetBranding(AppName, AppSubtitle, LogoPngPath, IcoPath);
+        _brandingService.SetBranding(AppName, AppSubtitle, LogoPngPath);
 
         RequestClose?.Invoke(true);
-    }
-
-    private static ImageSource? LoadIcoPreview(string? path)
-    {
-        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
-            return null;
-
-        try
-        {
-            var frame = BitmapFrame.Create(new Uri(path!, UriKind.Absolute), BitmapCreateOptions.None, BitmapCacheOption.OnLoad);
-            frame.Freeze();
-            return frame;
-        }
-        catch
-        {
-            return null;
-        }
     }
 }

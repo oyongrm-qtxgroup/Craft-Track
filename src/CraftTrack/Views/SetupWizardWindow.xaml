@@ -6,8 +6,8 @@
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:models="clr-namespace:CraftTrack.Models"
         mc:Ignorable="d"
-        Title="CraftTrack Setup"
-        Icon="pack://application:,,,/default.ico"
+        Title="Craft Track Setup"
+        Icon="pack://application:,,,/Craft%20Track%20(Icon).ico"
         Width="520"
         Height="620"
         WindowStyle="None"
@@ -116,9 +116,9 @@
                     <Grid>
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="380">
                             <Border Width="88" Height="88" CornerRadius="44" Background="#F3F4F6" Margin="0,0,0,18">
-                                <Image Source="pack://application:,,,/Assets/default.png" Stretch="Uniform" Margin="14" />
+                                <Image Source="pack://application:,,,/Assets/Craft%20Track%20(Icon).png" Stretch="Uniform" Margin="14" />
                             </Border>
-                            <TextBlock Text="Welcome to CraftTrack"
+                            <TextBlock Text="Welcome to Craft Track"
                                        FontSize="28"
                                        FontWeight="Bold"
                                        Foreground="#111827"
@@ -137,14 +137,14 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                         <StackPanel>
                             <TextBlock Text="Set Up Your Business" FontSize="24" FontWeight="Bold" Foreground="#111827" />
-                            <TextBlock Text="Customize name, subtitle, and logos."
+                            <TextBlock Text="Customize store name, description, and sidebar logo (PNG)."
                                        Margin="0,8,0,20"
                                        Foreground="#6B7280" />
 
-                            <TextBlock Text="Business Name" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,6" />
+                            <TextBlock Text="Store Name" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,6" />
                             <TextBox Text="{Binding AppName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12" />
 
-                            <TextBlock Text="Subtitle" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,6" />
+                            <TextBlock Text="Description" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,6" />
                             <TextBox Text="{Binding AppSubtitle, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,16" />
 
                             <TextBlock Text="Sidebar Logo (PNG)" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,8" />
@@ -160,20 +160,6 @@
                                 </Border>
                             </DockPanel>
                             <TextBlock Text="{Binding LogoPngPath}" Foreground="#6B7280" FontSize="12" Margin="0,0,0,14" TextWrapping="Wrap" />
-
-                            <TextBlock Text="Taskbar and Shortcut Icon (ICO)" FontWeight="SemiBold" Foreground="#374151" Margin="0,0,0,8" />
-                            <DockPanel>
-                                <Button Content="Browse ICO"
-                                        DockPanel.Dock="Right"
-                                        Style="{StaticResource ModernOutlinedButton}"
-                                        Command="{Binding BrowseIcoCommand}"
-                                        Padding="12,8"
-                                        Margin="12,0,0,0" />
-                                <Border Width="56" Height="56" CornerRadius="12" Background="#F3F4F6" BorderBrush="#E5E7EB" BorderThickness="1">
-                                    <Image Source="{Binding IcoPreview}" Stretch="Uniform" Margin="8" />
-                                </Border>
-                            </DockPanel>
-                            <TextBlock Text="{Binding IcoPath}" VerticalAlignment="Center" Foreground="#6B7280" TextWrapping="Wrap" Margin="0,8,0,0" />
                         </StackPanel>
                     </ScrollViewer>
                 </TabItem>
@@ -415,7 +401,7 @@
                                        FontSize="24"
                                        FontWeight="Bold"
                                        Foreground="#111827" />
-                            <TextBlock Text="Review your branding preview, then launch CraftTrack."
+                            <TextBlock Text="Review your branding preview, then launch Craft Track."
                                        Margin="0,8,0,20"
                                        Foreground="#6B7280" />
 

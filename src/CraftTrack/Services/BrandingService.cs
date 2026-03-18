@@ -13,13 +13,13 @@ public class BrandingService : IBrandingService
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "CraftTrack");
 
     private static readonly string SettingsPath = Path.Combine(SettingsDir, "branding.json");
-    private static readonly Uri DefaultLogoUri = new("pack://application:,,,/Assets/default.png", UriKind.Absolute);
-    private static readonly Uri DefaultIcoUri = new("pack://application:,,,/default.ico", UriKind.Absolute);
+    private static readonly Uri DefaultLogoUri = new("pack://application:,,,/Assets/Craft%20Track%20(Icon).png", UriKind.Absolute);
+    private static readonly Uri DefaultIcoUri = new("pack://application:,,,/Craft%20Track%20(Icon).ico", UriKind.Absolute);
 
     private BrandingSettings _settings = new();
 
-    public string AppName { get; private set; } = "CraftTrack";
-    public string AppSubtitle { get; private set; } = string.Empty;
+    public string AppName { get; private set; } = "Craft Track";
+    public string AppSubtitle { get; private set; } = "Your small business helper at hand";
     public ImageSource? LogoImageSource { get; private set; }
     public BitmapFrame? IcoImageSource { get; private set; }
     public bool IsSetupComplete => _settings.IsSetupComplete;
@@ -29,8 +29,10 @@ public class BrandingService : IBrandingService
     public void Initialize()
     {
         _settings = LoadSettings();
-        AppName = string.IsNullOrWhiteSpace(_settings.AppName) ? "CraftTrack" : _settings.AppName.Trim();
-        AppSubtitle = _settings.AppSubtitle?.Trim() ?? string.Empty;
+        AppName = string.IsNullOrWhiteSpace(_settings.AppName) ? "Craft Track" : _settings.AppName.Trim();
+        AppSubtitle = string.IsNullOrWhiteSpace(_settings.AppSubtitle)
+            ? "Your small business helper at hand"
+            : _settings.AppSubtitle.Trim();
 
         LogoImageSource = LoadLogoImage(_settings.LogoPath) ?? LoadDefaultLogoImage();
         IcoImageSource = LoadIcoImage(_settings.IcoPath) ?? LoadDefaultIconFrame();
@@ -38,8 +40,10 @@ public class BrandingService : IBrandingService
 
     public void SetBranding(string name, string subtitle, string? logoPngSourcePath = null, string? icoSourcePath = null)
     {
-        _settings.AppName = string.IsNullOrWhiteSpace(name) ? "CraftTrack" : name.Trim();
-        _settings.AppSubtitle = subtitle?.Trim() ?? string.Empty;
+        _settings.AppName = string.IsNullOrWhiteSpace(name) ? "Craft Track" : name.Trim();
+        _settings.AppSubtitle = string.IsNullOrWhiteSpace(subtitle)
+            ? "Your small business helper at hand"
+            : subtitle.Trim();
 
         if (!string.IsNullOrWhiteSpace(logoPngSourcePath))
         {

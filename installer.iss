@@ -2,7 +2,7 @@
 ; The Oyong's Ink & Print Studio
 
 #define MyAppName "CraftTrack"
-#define MyAppVersion "1.3.0"
+#define MyAppVersion "1.3.2"
 #define MyAppPublisher "The Oyong's Ink & Print Studio"
 #define MyAppExeName "CraftTrack.exe"
 #define MyAppURL "https://github.com/oyong"
@@ -19,7 +19,7 @@ DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 OutputDir=installer_output
 OutputBaseFilename=CraftTrack_Setup_{#MyAppVersion}
-SetupIconFile=src\CraftTrack\app.ico
+SetupIconFile=src\CraftTrack\Craft Track (Icon).ico
 UninstallDisplayIcon={app}\{#MyAppExeName}
 Compression=lzma2/ultra64
 SolidCompression=yes

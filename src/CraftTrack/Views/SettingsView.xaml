@@ -25,7 +25,7 @@
 
             <!-- ══════ Business Branding Section ══════ -->
             <TextBlock Text="Business Branding" Style="{StaticResource SectionTitle}" FontSize="17" />
-            <TextBlock Text="Set your business name, subtitle, logo, and app icon."
+            <TextBlock Text="Set your store name, description, and sidebar logo (PNG)."
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"
                        Margin="0,0,0,16" />
 
@@ -38,10 +38,10 @@
                         </Grid.ColumnDefinitions>
 
                         <StackPanel Grid.Column="0" Margin="0,0,16,0">
-                            <TextBlock Text="Business Name" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                            <TextBlock Text="Store Name" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
                             <TextBox Text="{Binding BrandingAppName, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" />
 
-                            <TextBlock Text="Subtitle" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
+                            <TextBlock Text="Description" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,6" />
                             <TextBox Text="{Binding BrandingAppSubtitle, UpdateSourceTrigger=PropertyChanged}" />
                         </StackPanel>
 
@@ -69,21 +69,8 @@
                                 Command="{Binding BrowseLogoCommand}" Padding="12,6" VerticalAlignment="Center" />
                     </Grid>
 
-                    <Grid Margin="0,0,0,18">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <StackPanel Grid.Column="0" Margin="0,0,12,0">
-                            <TextBlock Text="Taskbar and Shortcut Icon (ICO)" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
-                            <TextBlock Text="{Binding PendingIcoPath}" FontSize="12" Foreground="{DynamicResource TextMutedBrush}" TextWrapping="Wrap" />
-                        </StackPanel>
-                        <Button Grid.Column="1" Content="Browse..." Style="{StaticResource ModernOutlinedButton}"
-                                Command="{Binding BrowseIcoCommand}" Padding="12,6" VerticalAlignment="Center" />
-                    </Grid>
-
                     <DockPanel>
-                        <TextBlock Text="Taskbar icon and shortcuts will also be updated."
+                        <TextBlock Text="Branding changes apply to the app sidebar and title text."
                                    Foreground="{DynamicResource TextMutedBrush}"
                                    FontSize="12"
                                    VerticalAlignment="Center" />
@@ -98,7 +85,7 @@
 
             <!-- ══════ Appearance Section ══════ -->
             <TextBlock Text="Appearance" Style="{StaticResource SectionTitle}" FontSize="17" />
-            <TextBlock Text="Choose how CraftTrack looks. Select a theme to match your preference."
+            <TextBlock Text="Choose how Craft Track looks. Select a theme to match your preference."
                        Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"
                        Margin="0,0,0,20" />
 

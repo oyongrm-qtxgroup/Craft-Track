@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:CraftTrack.ViewModels"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}"
-        Icon="{Binding TaskbarIconSource}"
+        Icon="pack://application:,,,/Craft%20Track%20(Icon).ico"
         Height="768" Width="1280"
         MinHeight="600" MinWidth="960"
         WindowStartupLocation="CenterScreen"

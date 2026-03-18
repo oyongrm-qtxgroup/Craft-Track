@@ -8,12 +8,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>default.ico</ApplicationIcon>
+    <ApplicationIcon>Craft Track (Icon).ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\default.png" />
-    <Resource Include="default.ico" />
+    <Resource Include="Assets\Craft Track (Icon).png" />
+    <Resource Include="Craft Track (Icon).ico" />
   </ItemGroup>
 
   <ItemGroup>

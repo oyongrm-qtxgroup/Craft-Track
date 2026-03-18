@@ -48,19 +48,16 @@ public partial class SettingsViewModel : ObservableObject
     // ── Branding ──
 
     [ObservableProperty]
-    private string _brandingAppName = "CraftTrack";
+    private string _brandingAppName = "Craft Track";
 
     [ObservableProperty]
-    private string _brandingAppSubtitle = string.Empty;
+    private string _brandingAppSubtitle = "Your small business helper at hand";
 
     [ObservableProperty]
     private ImageSource? _brandingLogoPreview;
 
     [ObservableProperty]
     private string? _pendingLogoPngPath;
-
-    [ObservableProperty]
-    private string? _pendingIcoPath;
 
     public ObservableCollection<ColorScheme> Presets { get; } = new(ColorPresets.All);
 
@@ -137,30 +134,16 @@ public partial class SettingsViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void BrowseIco()
-    {
-        var dialog = new OpenFileDialog
-        {
-            Filter = "Icon files (*.ico)|*.ico",
-            Multiselect = false,
-            CheckFileExists = true
-        };
-
-        if (dialog.ShowDialog() == true)
-            PendingIcoPath = dialog.FileName;
-    }
-
-    [RelayCommand]
     private void ApplyBranding()
     {
-        _brandingService.SetBranding(BrandingAppName, BrandingAppSubtitle, PendingLogoPngPath, PendingIcoPath);
+        _brandingService.SetBranding(BrandingAppName, BrandingAppSubtitle, PendingLogoPngPath);
 
         BrandingAppName = _brandingService.AppName;
         BrandingAppSubtitle = _brandingService.AppSubtitle;
         BrandingLogoPreview = _brandingService.LogoImageSource;
 
         MessageBox.Show(
-            "Branding changes saved. Taskbar and shortcuts were updated when applicable.",
+            "Branding changes saved.",
             "Branding Updated",
             MessageBoxButton.OK,
             MessageBoxImage.Information);
