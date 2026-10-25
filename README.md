@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet" alt=".NET 10" />
   <img src="https://img.shields.io/badge/WPF-Windows-0078D4?logo=windows" alt="WPF" />
   <img src="https://img.shields.io/badge/SQLite-Embedded-003B57?logo=sqlite" alt="SQLite" />
-  <img src="https://img.shields.io/badge/License-Proprietary-red" alt="License" />
+  <img src="https://img.shields.io/badge/License-MIT-green" alt="License: MIT" />
 </p>
 
 ---
@@ -244,4 +244,4 @@ This is currently a private project. If you'd like to contribute, please open an
 
 ## License
 
-This project is proprietary software developed by **The Oyong's Ink & Print Studio**. All rights reserved.
+MIT, see [LICENSE](LICENSE). Built by **The Oyong's Ink & Print Studio**.

@@ -41,9 +41,9 @@ var customerNames = new[]
     "Ramon Aquino", "Jessica Flores", "Paolo Garcia", "Nina Cruz", "Robert Tan",
     "Sophia Lim", "Carlos Mendoza", "Patricia Ramos", "Daniel Navarro", "Victoria Castillo"
 };
-var phones = new[] { "0917-123-4567", "0918-234-5678", "0919-345-6789", "0920-456-7890", "0921-567-8901",
-    "0922-678-9012", "0923-789-0123", "0925-890-1234", "0926-901-2345", "0927-012-3456",
-    "0928-111-2222", "0929-333-4444", "0930-555-6666", "0931-777-8888", "0932-999-0000" };
+// Placeholder numbers (0900-000-0001 to 0015), obviously not anyone's mobile, so
+// the sample data can't point at a real person.
+var phones = Enumerable.Range(1, 15).Select(n => $"0900-000-{n:D4}").ToArray();
 
 for (int i = 0; i < customerNames.Length; i++)
 {
